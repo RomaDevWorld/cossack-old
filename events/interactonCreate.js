@@ -29,6 +29,17 @@ module.exports = {
                   cd.delete(interaction.user.id);
                 }, cdTime);
             }
+        }else if(interaction.isContextMenuCommand()){
+            const { commands } = client;
+            const { commandName } = interaction;
+            const contextCommand = commands.get(commandName)
+            if(!contextCommand) return;
+
+            try{
+                await contextCommand.execute(interaction)
+            }catch(err){
+                if(err) console.error(err)
+            }
         }
     }
 }

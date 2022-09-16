@@ -13,12 +13,8 @@ module.exports = async function (client) {
                     let name = database[i].value.name
                         .replace(`ON`, members.filter(mem => mem.presence && !mem.user.bot).size)
                         .replace(`ALL`, members.filter(mem => !mem.user.bot).size)
-                     if(channel.name !== name){
-                        channel.setName(name)
-                        console.log(name)
-                    }else{
-                        console.log(`Було: ` + name)
-                    }
+                     if(channel.name !== name) channel.setName(name)
+
                 }catch(err){
                     console.log(err)
                 }
