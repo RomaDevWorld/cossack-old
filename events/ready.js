@@ -44,5 +44,9 @@ module.exports = {
                 }
             }
         })(); 
+
+        setInterval(() => {
+            require(`../functions/conters.js`)(client)
+        }, 15000);
     }
 }
