@@ -47,6 +47,6 @@ module.exports = {
 
         setInterval(() => {
             require(`../functions/conters.js`)(client)
-        }, 15000);
+        }, 60000 * 5);
     }
 }
