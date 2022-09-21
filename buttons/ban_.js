@@ -8,11 +8,14 @@ module.exports = {
         if(member){
             try{
                 member.ban({ deleteMessageSeconds: 60 * 60, reason: `${interaction.user.tag}: Заблокувати учасника та очитити повідомлення за 1 год.` })
-                await interaction.reply({ content: `Учасник був успішно заблокований а повідомлення за останню годину - видалені`, ephemeral: true })
+                await interaction.reply({ embeds: [{ author: { name: 'Учасник був успішно заблокований а повідомлення за останню годину - видалені' }, color: 0x33a64e }], ephemeral: true })
             }catch(err){
                 console.log(err)
                 await interaction.reply({ content: `Щось пішло не так. Спробуйте ще-раз піздніше або зверніться до адміністратора.`, ephemeral: true })
             }   
+        }else{
+            await interaction.update({embeds: interaction.message.embeds, components: []})
+            await interaction.followUp({ embeds: [{ author: { name: 'Цей учасник більше не знаходиться на сервері.' }, color: 0xcc7229 }], ephemeral: true })
         }
     }
 }

@@ -17,8 +17,8 @@ module.exports = {
         .setType(ApplicationCommandType.Message),
     async execute(interaction) {
         let message = await interaction.channel.messages.fetch(interaction.targetId)
-        if(message.author.bot) return await interaction.reply({ content: `Не можна кидати скаргу на ботів!`, ephemeral: true })
-        if(message.author.id === interaction.user.id) return await interaction.reply({ content: `Не можна кидати скаргу на себе!`, ephemeral: true })
+        if(message.author.bot) return await interaction.reply({ embeds: [{ author: { name: 'Не можна скаржитись на ботів!' }, color: 0xcc2929 }], ephemeral: true })
+        if(message.author.id === interaction.user.id) return await interaction.reply({ embeds: [{ author: { name: 'Не можна скаржитись на себе!' }, color: 0xcc2929 }], ephemeral: true })
 
         if(!count[message.author.id]){
             count[message.author.id] = {
@@ -26,7 +26,7 @@ module.exports = {
             }
             setTimeout(() => { delete count[message.author.id] }, 60000)
         }else{
-            //if(count[message.author.id].members.includes(interaction.user.id)) return await interaction.reply({ content: `Ви вже кинули скаргу на цього учасника!`, ephemeral: true })
+            if(count[message.author.id].members.includes(interaction.user.id)) return await interaction.reply({ embeds: [{ author: { name: 'Ви вже поскаржились на цього учасника!' }, color: 0xcc2929 }], ephemeral: true })
             count[message.author.id].members.push(interaction.user.id)
 
             let dbc = await db.get(`${interaction.guild.id}.channel`)
@@ -55,14 +55,23 @@ module.exports = {
                 .setAuthor({ name: `Нова скарга! (${count[message.author.id].members.length}/${repstomute})`, url: require(`../functions/memes.js`)(1) })
                 .addFields({ name: `Учасник`, value: `${message.author}` })
     
-                if((count[message.author.id].members.length / repstomute * 100) > 99){
+                if((count[message.author.id].members.length / repstomute * 100) === 100){
                     embed
                     .setColor(`Red`)
                     .setDescription("Контекст повідомлення\n```" + message.content + "```")
                     .setFooter({ text: `Ми видалили повідомлення та заблокували чат на 60 секунд` })
                     message.delete()
                     message.member.timeout(60 * 1000, `Велика кількість скарг на хвилину (${count[message.author.id].members.length})`)
-                    message.member.send(`Ми тимчасово заблокували тобі можливість писати та розмовляти в чаті через велику кількість скарг. Блокування пройде через 60 секунд`)
+                    message.member.send({
+                        "author": {
+                            "name": "Чат заблоковано!"
+                        },
+                        "description": "Ми тимчасово заблокували тобі можливість писати та розмовляти в чаті через велику кількість скарг. ",
+                        "footer": {
+                            "text": "Блокування завершиться через 60 секунд"
+                        },
+                        "color": 15879747
+                    })
                     .catch(O_o=>{})
     
                     log.send({ embeds: [embed], components: [row] })
@@ -89,7 +98,16 @@ module.exports = {
                 if((count[message.author.id].members.length / repstomute * 100) === 100){
                     message.delete()
                     message.member.timeout(60 * 1000, `Велика кількість скарг на хвилину (${count[message.author.id].members.length})`)
-                    message.member.send(`Ми тимчасово заблокували тобі можливість писати та розмовляти в чаті через велику кількість скарг. Блокування пройде через 60 секунд`)
+                    message.member.send({
+                        "author": {
+                            "name": "Чат заблоковано!"
+                        },
+                        "description": "Ми тимчасово заблокували тобі можливість писати та розмовляти в чаті через велику кількість скарг. ",
+                        "footer": {
+                            "text": "Блокування завершиться через 60 секунд"
+                        },
+                        "color": 15879747
+                    })
                     .catch(O_o=>{})
                 }
             }
@@ -97,6 +115,6 @@ module.exports = {
 
 
 
-        await interaction.reply({ content: `Скарга була відправлена!`, ephemeral: true })
+        await interaction.reply({ embeds: [{ author: { name: 'Скарга успішно відправлена!' }, color: 0x33a64e }], ephemeral: true })
     }
 }

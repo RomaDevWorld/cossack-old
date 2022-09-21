@@ -13,7 +13,7 @@ module.exports = {
 
         if(interaction.isCommand()){
         if (cd.has(interaction.user.id)) { 
-            interaction.reply({ content: `Охолодись! Команди можна писати лишень раз в ${cdTime / 1000} секунд!`, ephemeral: true });
+            await interaction.reply({ embeds: [{ author: { name: `Охолодись! Команди можна писати лишень раз в ${cdTime / 1000} секунд!` }, color: 0xcc7229 }], ephemeral: true })
           } else {
             
                 const command = interaction.client.commands.get(interaction.commandName)
@@ -46,11 +46,10 @@ module.exports = {
             for (let i in buttons){
                 if(interaction.customId.startsWith(buttons[i])) button = require(`../buttons/${buttons[i]}.js`)
             }
-            if(!button) return await interaction.reply({ content: `Дідько! Щось сталось не так. Спробуйте ще-раз піздніше.`, ephemeral: true })
-            console.log(interaction)
+            if(!button) return await interaction.reply({ embeds: [{ author: { name: 'Дідько! Щось сталось не так! Спробуйте піздніше.' }, color: 0xcc2929 }], ephemeral: true })
             if(button.permission){
                 let permissionBit = new PermissionsBitField([button.permission])
-                if(!interaction.member.permissions.has(permissionBit)) return console.log(`Нєма`)
+                if(!interaction.member.permissions.has(permissionBit)) return await interaction.reply({ embeds: [{ author: { name: 'Недостатньо прав!' }, color: 0xcc7229 }], ephemeral: true })
             }
             await button.execute(interaction)
         }
