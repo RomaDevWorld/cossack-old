@@ -30,4 +30,13 @@ for (const file of eventFiles){
     }
 }
 
+//Buttons handler (for separate files)
+const buttonFiles = fs.readdirSync('./buttons/').filter(file => file.endsWith('js'))
+const buttons = []
+client.buttons = new Collection()
+for (let file of buttonFiles){
+    const button = require(`./buttons/${file}`)
+    client.buttons.set(button.id, button)
+}
+
 client.login(process.env.TOKEN)

@@ -1,5 +1,5 @@
 require(`dotenv`).config()
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } = require('discord.js');
 const { EmbedBuilder } = require(`discord.js`)
 const fs = require(`fs`)
 
@@ -40,6 +40,19 @@ module.exports = {
             }catch(err){
                 if(err) console.error(err)
             }
+        }else if(interaction.isButton()){
+            const buttons = await Array.from(interaction.client.buttons.keys())
+            let button
+            for (let i in buttons){
+                if(interaction.customId.startsWith(buttons[i])) button = require(`../buttons/${buttons[i]}.js`)
+            }
+            if(!button) return await interaction.reply({ content: `Дідько! Щось сталось не так. Спробуйте ще-раз піздніше.`, ephemeral: true })
+            console.log(interaction)
+            if(button.permission){
+                let permissionBit = new PermissionsBitField([button.permission])
+                if(!interaction.member.permissions.has(permissionBit)) return console.log(`Нєма`)
+            }
+            await button.execute(interaction)
         }
     }
 }

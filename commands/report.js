@@ -9,7 +9,7 @@ const { QuickDB } = require(`quick.db`)
 const db = new QuickDB().table(`logs`)
 
 const count = {}
-const repstomute = 5
+const repstomute = 1
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -26,11 +26,11 @@ module.exports = {
             }
             setTimeout(() => { delete count[message.author.id] }, 60000)
         }else{
-            if(count[message.author.id].members.includes(interaction.user.id)) return await interaction.reply({ content: `Ви вже кинули скаргу на цього учасника!`, ephemeral: true })
+            //if(count[message.author.id].members.includes(interaction.user.id)) return await interaction.reply({ content: `Ви вже кинули скаргу на цього учасника!`, ephemeral: true })
             count[message.author.id].members.push(interaction.user.id)
 
             let dbc = await db.get(`${interaction.guild.id}.channel`)
-            let log = await interaction.guild.channels.fetch(dbc)
+            let log = await interaction.guild.channels.cache.get(dbc)
             if(log){
                 const row = new ActionRowBuilder()
                 .addComponents(
@@ -48,11 +48,11 @@ module.exports = {
                 .addComponents(
                     new ButtonBuilder()
                         .setCustomId(`ban_${message.author.id}`)
-                        .setLabel('Заблокувати')
+                        .setLabel('Заблокувати (Очистити повідомлення)')
                         .setStyle(`Danger`),
                 );
                 let embed = new EmbedBuilder()
-                .setAuthor({ name: `**Нова скарга!** (${count[message.author.id].members.length}/${repstomute})`, url: require(`../functions/memes.js`)(1) })
+                .setAuthor({ name: `Нова скарга! (${count[message.author.id].members.length}/${repstomute})`, url: require(`../functions/memes.js`)(1) })
                 .addFields({ name: `Учасник`, value: `${message.author}` })
     
                 if((count[message.author.id].members.length / repstomute * 100) > 99){
