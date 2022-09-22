@@ -4,9 +4,9 @@ const db = new QuickDB()
 module.exports = async function (client) {
     const database = await db.table(`counters`).all()
     for (let i in database){
-        let guild = await client.guilds.fetch(database[i].id)
+        let guild = await client.guilds.cache.get(database[i].id)
         if(guild){
-            let channel = await guild.channels.fetch(database[i].value.id)
+            let channel = await guild.channels.cache.get(database[i].value.id)
             if(channel){
                 try{
                     let members = await guild.members.fetch()

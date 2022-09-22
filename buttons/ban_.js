@@ -1,4 +1,4 @@
-const { PermissionsBitField, CommandInteractionOptionResolver } = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
 
 module.exports = {
     id: "ban_",

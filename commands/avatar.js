@@ -2,14 +2,14 @@ const { ContextMenuCommandBuilder, ApplicationCommandType, EmbedBuilder } = requ
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
-        .setName('avatar')
+        .setName('Отримати аватар учасника')
         .setType(ApplicationCommandType.User),
     async execute(interaction) {
         try{
             let target = await interaction.targetUser
             const embed = new EmbedBuilder()
             .setAuthor({ name: `Аватар ${target.username}`, url: require(`../functions/memes.js`)(1) })
-            .setImage(target.displayAvatarURL({ dynamic: true }))
+            .setImage(target.displayAvatarURL({ dynamic: true, size: 2048 }))
             .setColor('Green')
             await interaction.reply({ embeds: [embed], ephemeral: true })
         }catch(err){

@@ -13,7 +13,7 @@ const repstomute = 1
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
-        .setName('report')
+        .setName('Поскаржитись')
         .setType(ApplicationCommandType.Message),
     async execute(interaction) {
         let message = await interaction.channel.messages.fetch(interaction.targetId)
