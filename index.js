@@ -6,8 +6,12 @@ const client = new Client({ intents: [
     GatewayIntentBits.GuildMessages, 
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildPresences
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildVoiceStates
 ] }); 
+
+//Creates a collection for private channels
+client.privates = new Collection()
 
 //Command handler (For the separate files)
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('js'))
@@ -26,7 +30,7 @@ for (const file of eventFiles){
     if(event.once){
         client.once(event.name, (...args) => event.execute(...args, commands));
     } else {
-        client.on(event.name, (...args) => event.execute(...args, commands));
+        client.on(event.name, (...args) => event.execute(...args, client, commands));
     }
 }
 
