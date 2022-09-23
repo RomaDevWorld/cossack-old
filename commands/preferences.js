@@ -1,13 +1,19 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, Embed } = require('discord.js')
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js')
 const { QuickDB } = require(`quick.db`)
 let memes = require(`../functions/memes.js`)
-const db = new QuickDB
+const db = new QuickDB()
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('preferences')
         .setDescription('Змінює налаштування бота щодо сервера.')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .addSubcommand(subcommand => 
+            subcommand
+            .setName("vclobby")
+            .setDescription(`Встановити канал для автоматичного створення приватних голосових каналів. (Не вказано - видалити.)`)
+            .addChannelOption(option => option.setName(`lobby`).setDescription(`Голосовий канал`))  
+        )
         .addSubcommandGroup(group => 
             group
             .setName(`log`)
@@ -42,6 +48,32 @@ module.exports = {
             )
         ),
     async execute(interaction) {
+        if(!interaction.options.getSubcommandGroup()){
+            if(interaction.options.getSubcommand() === `vclobby`){
+                let lobbies = db.table("lobbies")
+                let channel = interaction.options.getChannel("lobby")
+                if(!channel){
+                    await lobbies.delete(interaction.guild.id)
+                    let embed = new EmbedBuilder()
+                    .setAuthor({ name: `Лоббі видалено!`, url: require(`../functions/memes.js`)(1) })
+                    .setColor('Green')
+                    .setDescription(`Учасники більше не зможуть створити нові приватні голосові канали.`)
+                    .setFooter({ text: 'Добавити: /preferences vclobby [lobby]' })
+                    return await interaction.reply({embeds: [embed]})
+                }else{
+                    if(channel.type !== 2) return await interaction.reply({ embeds: [{ author: { name: 'Лоббі можна встановити тільки в якості голосового каналу.' }, color: 0xcc2929 }], ephemeral: true })
+
+                    await lobbies.set(interaction.guild.id, channel.id)
+                    let embed = new EmbedBuilder()
+                    .setAuthor({ name: `Лоббі добавлено/змінено!`, url: require(`../functions/memes.js`)(1) })
+                    .setColor('Green')
+                    .setDescription('Тепер учасники можуть створювати приватні голосові канали, заходячи в канал або прописуючи відповідну команду.')
+                    .setFooter({ text: `Канал: ${channel.name}` })
+                    return await interaction.reply({embeds: [embed]})
+                }
+            }
+        }
+
         if(interaction.options.getSubcommandGroup() === `counter`){
             const counters = db.table("counters")
 

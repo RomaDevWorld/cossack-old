@@ -1,4 +1,6 @@
-const client = require(`../index.js`)
+const client = require(`../index.js`);
+const { QuickDB } = require('quick.db');
+const db = new QuickDB().table('lobbies')
 
 module.exports = {
     name: 'voiceStateUpdate',
@@ -7,13 +9,20 @@ module.exports = {
         let pas = oldVoiceState
         let cur = newVoiceState
         
-        if(cur.channel && cur.channel.id === `1022537659354198157`){
-            let set = client.privates[`${cur.guild.id}_${cur.id}`]
-            if(set){
-                let channel = await cur.guild.channels.cache.get(set)
-                if(channel) cur.setChannel(channel)
-            }else{
-                require("../functions/vc_create.js")(cur.member, cur.guild, client)
+        if(await db.get(cur.guild.id)){
+            if(cur.channel && cur.channel.id === await db.get(cur.guild.id)){
+                let set = client.privates[`${cur.guild.id}_${cur.id}`]
+                if(set){
+                    let channel = await cur.guild.channels.cache.get(set)
+                    if(channel){
+                        cur.setChannel(channel)
+                    }else{
+                        require("../functions/vc_create.js")(cur.member, cur.guild, client)
+                    }
+                }else{
+                    require("../functions/vc_create.js")(cur.member, cur.guild, client)
+                }
             }
         }
+
 }}
