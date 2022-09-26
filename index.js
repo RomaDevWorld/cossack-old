@@ -10,8 +10,8 @@ const client = new Client({ intents: [
     GatewayIntentBits.GuildVoiceStates
 ] }); 
 
-//Creates a collection for private channels
-client.privates = new Collection()
+//Creates a json for private channels
+client.privates = {}
 
 //Command handler (For the separate files)
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('js'))

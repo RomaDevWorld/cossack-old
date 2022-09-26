@@ -59,18 +59,26 @@ module.exports = {
                 return await interaction.reply({ embeds: [embed] })
             }
 
-            if(channels[`${interaction.guild.id}_${interaction.member.id}`]){
-                let channel = interaction.guild.channels.cache.get(channels[`${interaction.guild.id}_${interaction.member.id}`])
-                if(channel){
-                    await require(`../functions/vc_create.js`)(interaction.member, interaction.guild, interaction.client).then(async channel => {
-                    })
-                    channel.delete()
-                    return await interaction.reply(`Channel re-created: ` + channel)
-                }
+            let channel = interaction.guild.channels.cache.get(channels[`${interaction.guild.id}_${interaction.member.id}`])
+            if(channels[`${interaction.guild.id}_${interaction.member.id}`] && channel){
+                await require(`../functions/vc_create.js`)(interaction.member, interaction.guild, interaction.client).then(async cha => {
+                    let embed = new EmbedBuilder()
+                    .setAuthor({ name: `Канал пере-створений` })
+                    .setDescription(`Ваш новий канал: **${cha}**`)
+                    .setColor(`#2CF5AA `)
+                    return await interaction.reply({ embeds: [embed], ephemeral: true })
+                })
+                await channel.delete()
+            }else{
+                require(`../functions/vc_create.js`)(interaction.member, interaction.guild, interaction.client).then(async cha => {
+                    let embed = new EmbedBuilder()
+                    .setAuthor({ name: `Канал створений` })
+                    .setDescription(`Ваш новий канал: **${cha}**`)
+                    .setColor(`#2CF5AA `)
+                    return await interaction.reply({ embeds: [embed], ephemeral: true })
+                })
             }
-            require(`../functions/vc_create.js`)(interaction.member, interaction.guild, interaction.client).then(async channel => {
-                await interaction.reply(`Channel created: ` + channel)
-            })
+
         }
         if(interaction.options.getSubcommand() === `invite`){
             if(!channels[`${interaction.guild.id}_${interaction.member.id}`]) return await interaction.reply({ embeds: [{ author: { name: `У вас немає створеного каналу!` }, color: 0xcc7229 }], ephemeral: true })
@@ -80,6 +88,16 @@ module.exports = {
             let member = interaction.options.getMember('member')
             channel.permissionOverwrites.edit(member.id, { ViewChannel: true })
             await interaction.reply({ embeds: [{ author: { name: `${member.user.username} був добавлений до Вашого каналу!` }, color: 0x2CF5AA }], ephemeral: true })
+        }
+        if(interaction.options.getSubcommand() === `kick`){
+            if(!channels[`${interaction.guild.id}_${interaction.member.id}`]) return await interaction.reply({ embeds: [{ author: { name: `У вас немає створеного каналу!` }, color: 0xcc7229 }], ephemeral: true })
+            let channel = await interaction.guild.channels.cache.get(channels[`${interaction.guild.id}_${interaction.member.id}`])
+            if(!channel) return await interaction.reply({ embeds: [{ author: { name: `У вас немає створеного каналу!` }, color: 0xF54C2C }], ephemeral: true })
+
+            let member = interaction.options.getMember('member')
+            channel.permissionOverwrites.edit(member.id, { ViewChannel: false })
+            if(member.voice.channel && member.voice.channel.id === channel.id) member.voice.disconnect()
+            await interaction.reply({ embeds: [{ author: { name: `${member.user.username} був виключений з Вашого каналу!` }, color: 0x2CF5AA }], ephemeral: true })
         }
         if(interaction.options.getSubcommandGroup() === 'manage'){
             let channel = interaction.guild.channels.cache.get(channels[`${interaction.guild.id}_${interaction.member.id}`])
@@ -96,12 +114,10 @@ module.exports = {
                 }
             }else if(interaction.options.getSubcommand() === `limit`){
                 let num = await interaction.options.getInteger('limit')
-                console.log(num)
                 var limi
                 if(num > 99) limi = 99
                 else if(num < 2) limi = 2
                 else limi = num
-                console.log(limi)
                 channel.setUserLimit(limi)
                 return await interaction.reply({ embeds: [{ author: { name: `Ліміт учасників - ${limi}` }, color: 0x2CF5AA }], ephemeral: true });
             }else if(interaction.options.getSubcommand() === `delete`){

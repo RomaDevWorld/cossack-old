@@ -1,4 +1,4 @@
 module.exports = async function (member, channel, client) { 
     channel.delete()
-    client.privates.delete(`${member.id}_${channel.guild.id}`)
+    delete client.privates[`${channel.guild.id}_${member.id}`]
 };

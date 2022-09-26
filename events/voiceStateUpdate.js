@@ -6,6 +6,8 @@ module.exports = {
     name: 'voiceStateUpdate',
     once: false,
     async execute (oldVoiceState, newVoiceState, client) {
+        require('../functions/vc_timeout.js')(newVoiceState, oldVoiceState, client)
+
         let pas = oldVoiceState
         let cur = newVoiceState
         
