@@ -1,7 +1,7 @@
 const { Rest, REST } = require('@discordjs/rest')
 const { Routes } = require('discord-api-types/v9')
+const { ActivityType } = require('discord.js')
 require('dotenv').config()
-const fs = require(`fs`)
 
 module.exports = {
     name: 'ready',
@@ -9,7 +9,7 @@ module.exports = {
     execute (client, commands) {
         console.log(`${client.user.tag} is online.`)
 
-        //client.user.setPresence({ activities: [{ name: '?' }] }); //Bot's activity 
+        client.user.setActivity('за своїми яйцями', { type: ActivityType.Watching });
 
         const CLIENT_ID = client.user.id
         const rest = new REST({

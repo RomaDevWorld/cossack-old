@@ -1,4 +1,3 @@
-const client = require(`../index.js`);
 const { QuickDB } = require('quick.db');
 const db = new QuickDB().table('lobbies')
 

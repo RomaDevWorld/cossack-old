@@ -1,7 +1,5 @@
 require(`dotenv`).config()
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } = require('discord.js');
-const { EmbedBuilder } = require(`discord.js`)
-const fs = require(`fs`)
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } = require('discord.js');
 
 const cd = new Set();
 const cdTime = 5000; //If you want to, you can change the cooldown time (miliseconds)
