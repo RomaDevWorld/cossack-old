@@ -56,7 +56,7 @@ module.exports = {
                 .setColor('Orange')
                 .setDescription('На цьому сервері відсутній канал лоббі.\nЗверніться до адміністратора.')
                 .setFooter({ text: `Встановити: /preferences vclobby [lobby]` })
-                return await interaction.reply({ embeds: [embed] })
+                return await interaction.reply({ embeds: [embed], ephemeral: true })
             }
 
             let channel = interaction.guild.channels.cache.get(channels[`${interaction.guild.id}_${interaction.member.id}`])
