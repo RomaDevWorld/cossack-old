@@ -11,27 +11,23 @@ module.exports = {
             'sw_bans': ['banAdd', 'banRemove'],
             'sw_msgs': ['msgEdit', 'msgDelete'],
             'sw_members': ['memAdd', 'memRemove', 'memUpdate']
-        }
+        } //Types handler
 
         if(interaction.component.data.style === 3){
-            //Turn off
-            await db.pull(`${interaction.guild.id}.types`, types[interaction.customId])
-            interaction.component.data.style = 4
+            //Turn off the switch
+            await db.pull(`${interaction.guild.id}.types`, types[interaction.customId]) //Delete one or several types from database
+            interaction.component.data.style = 4 //Change button style to DANGER
         }else{
-            //Turn on
+            //Turn on the switch
             if(!exist(await db.get(`${interaction.guild.id}.types`), types[interaction.customId])) await db.push(`${interaction.guild.id}.types`, types[interaction.customId])
-            interaction.component.data.style = 3
-
+            //If database has none of specified types - add a types to database
+            interaction.component.data.style = 3 //Change button style to SUCCESS
         }
 
-        let row = new ActionRowBuilder()
-        for (let i in interaction.message.components[0].components){
-            if(interaction.message.components[0].components[i].data.customId === interaction.customId){
-                row.addComponents(interaction.message.components[0].components[i])
-            }else{
-                row.addComponents(interaction.message.components[0].components[i])
-            }
+        let row = new ActionRowBuilder() //Creates the new act.row
+        for (let i in interaction.message.components[0].components){ //Loops throught every button at interaction.message
+                row.addComponents(interaction.message.components[0].components[i]) //Adds a button to new action row
         }
-        interaction.update({components: [row]});
+        await interaction.update({components: [row]}); //Updates a message
     }
 }

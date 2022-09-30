@@ -1,7 +1,7 @@
 module.exports = function (type) { 
-    let array
+    let array //Array variable
 
-    if(type = 1){
+    if(type = 1){ //If type is 1
         array = [
             "https://youtu.be/Hy8kmNEo1i8",
             "https://youtu.be/t0I4mTEdAf8",
@@ -27,5 +27,5 @@ module.exports = function (type) {
     }else{
         array = ['null']
     }
-    return array[Math.floor(Math.random()*array.length)];
+    return array[Math.floor(Math.random()*array.length)]; //Get random item from defined array
 };

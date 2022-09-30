@@ -6,8 +6,8 @@ module.exports = async function (type, client, options) {
     var channel
     //messageDelete
     if(type === 'msgDelete'){
-        channel = await getlog(options.message.guild, true)
-        if(!channel || await isOn(channel.guild, 'msgDelete') === false) return;
+        channel = await getlog(options.message.guild, true) //Finds a log channel from db
+        if(!channel || await isOn(channel.guild, 'msgDelete') === false || options.message.author.bot) return; //If channel wasn't found or switcher is off, or user is bot - return
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Повідомлення видалено | ${options.message.member.nickname}`, iconURL: options.message.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`[Перейти до повідомлення](${options.message.url})\n**Контент повідомлення:**\n` + options.message.content)
@@ -18,13 +18,12 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `USID: ${options.message.author.id}` })
         .setColor('Red')
         .setTimestamp()
-        await channel.send({ embeds: [embed] })
+        await channel.send({ embeds: [embed] }) //Creates an embed and send's it to the log channel
     }
     //messageUpdate
     else if(type === 'msgUpdate'){
-        if(options.newMessage.author.bot) return;
         channel = await getlog(options.newMessage.guild, true)
-        if(!channel || await isOn(channel.guild, 'msgUpdate') === false) return;
+        if(!channel || await isOn(channel.guild, 'msgUpdate') === false || options.newMessage.author.bot) return; //Does the same thing every time
 
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Повідомлення відредаговано | ${options.newMessage.member.nickname}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })
@@ -45,7 +44,7 @@ module.exports = async function (type, client, options) {
         channel = await getlog(options.newMember.guild, true)
         if(!channel || await isOn(channel.guild, 'memUpdate') === false) return;
 
-        if(options.oldMember.nickname !== options.newMember.nickname){
+        if(options.oldMember.nickname !== options.newMember.nickname){ //If old nickname and new nickname's are not the same
             let embed = new EmbedBuilder()
             .setAuthor({ name: `Нікнейм змінено | ${options.newMember.user.tag}`, iconURL: options.newMember.displayAvatarURL({ dynamic: true }) })
             .setDescription(`${options.newMember} змінив нікнейм!`)
@@ -56,7 +55,7 @@ module.exports = async function (type, client, options) {
             .setFooter({ text: `USID: ${options.newMember.id}` })
             .setColor('Blue')
             .setTimestamp()
-            await channel.send({ embeds: [embed] })
+            await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
         }
 
         let embed = new EmbedBuilder()
@@ -64,24 +63,24 @@ module.exports = async function (type, client, options) {
         .setColor('Yellow')
         .setTimestamp()
         .setFooter({ text: `USID: ${options.newMember.id}` })
-        if (options.oldMember.roles.cache.size > options.newMember.roles.cache.size) {
+        if (options.oldMember.roles.cache.size > options.newMember.roles.cache.size) { //Role was removed
             let reRole = []
-            options.oldMember.roles.cache.forEach(role => {
-                if (!options.newMember.roles.cache.has(role.id)) reRole.push(role)
+            options.oldMember.roles.cache.forEach(role => { //Loop throught every old role
+                if (!options.newMember.roles.cache.has(role.id)) reRole.push(role) //If new role doesn't have old one - push it to the array
             });
-            embed.addFields({ name: `Вилучені ролі:`, value: reRole.join(`\n`) })
-        } else if (options.oldMember.roles.cache.size < options.newMember.roles.cache.size) {
+            embed.addFields({ name: `Вилучені ролі:`, value: reRole.join(`\n`) }) //Add a field with the removed roles
+        } else if (options.oldMember.roles.cache.size < options.newMember.roles.cache.size) { //Role was added
             let adRole = []
-            options.newMember.roles.cache.forEach(role => {
-                if (!options.oldMember.roles.cache.has(role.id)) adRole.push(role)
+            options.newMember.roles.cache.forEach(role => { //Loop throught every new role
+                if (!options.oldMember.roles.cache.has(role.id)) adRole.push(role) //If old role doesn't have new one - push it to the array
             });
-            embed.addFields({ name: `Додані ролі:`, value: adRole.join(`\n`) })
+            embed.addFields({ name: `Додані ролі:`, value: adRole.join(`\n`) }) //Add a field with the new roles
         }
-        if(embed.data.fields) await channel.send({ embeds: [embed] })
+        if(embed.data.fields) await channel.send({ embeds: [embed] }) //If at least one of the fields was added - send embed to the log
     }
     else if(type === 'memRemove'){
         channel = await getlog(options.member.guild, true)
-        if(!channel || await isOn(channel.guild, 'memRemove') === false) return;
+        if(!channel || await isOn(channel.guild, 'memRemove') === false) return; //Does the same
 
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Учасник вийшов | ${options.member.nickname}`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
@@ -94,7 +93,7 @@ module.exports = async function (type, client, options) {
     //guildMemberAdd
     else if(type === 'memAdd'){
         channel = await getlog(options.member.guild, true)
-        if(!channel || await isOn(channel.guild, 'memAdd') === false) return;
+        if(!channel || await isOn(channel.guild, 'memAdd') === false) return; //Does the same
 
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Учасник зайшов`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
@@ -105,6 +104,8 @@ module.exports = async function (type, client, options) {
         await channel.send({ embeds: [embed] })
     }
     else if(type === 'banAdd'){
+        //Doesn't actyally work :(
+
         channel = await getlog(options.guild, true)
         if(!channel || await isOn(channel.guild.guild, 'banAdd') === false) return;
 
@@ -117,6 +118,8 @@ module.exports = async function (type, client, options) {
         await channel.send({ embeds: [embed] })
     }
     else if(type === 'banRemove'){
+        //Doesn't actyally work :(
+
         channel = await getlog(options.guild, true)
         if(!channel || await isOn(channel.guild, 'banRemove') === false) return;
 
@@ -131,16 +134,16 @@ module.exports = async function (type, client, options) {
 };
 
 async function getlog(guild, bool) {
-    if(bool === true){
-        return guild.channels.cache.get(await db.get(`${guild.id}.channel`))
+    if(bool === true){ //For some reason i've added an boolean?
+        return guild.channels.cache.get(await db.get(`${guild.id}.channel`)) //Returns a channel, that have been found from db(or not)
     } 
     return await db.get(guild.id)
 }
 
 async function isOn(guild, type){
-    if((await db.get(`${guild.id}.types`)).includes(type)){
+    if((await db.get(`${guild.id}.types`)).includes(type)){ //If db array has that type
         return true
-    }else{
+    }else{ //Nah
         return false
     }
 }

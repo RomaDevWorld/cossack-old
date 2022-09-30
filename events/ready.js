@@ -9,9 +9,9 @@ module.exports = {
     execute (client, commands) {
         console.log(`${client.user.tag} is online.`)
 
-        client.user.setActivity('за контрнаступом.', { type: ActivityType.Watching });
+        client.user.setActivity('за контрнаступом.', { type: ActivityType.Watching }); //Client's activity
 
-        const CLIENT_ID = client.user.id
+        const CLIENT_ID = client.user.id 
         const rest = new REST({
             version: '10'
         }).setToken(process.env.TOKEN);
@@ -46,7 +46,7 @@ module.exports = {
         })(); 
 
         setInterval(() => {
-            require(`../functions/conters.js`)(client)
+            require(`../functions/conters.js`)(client) //Execute 'counters' function every 5 minutes
         }, 60000 * 5);
     }
 }
