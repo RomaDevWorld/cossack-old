@@ -10,7 +10,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'msgDelete') === false || options.message.author.bot) return; //If channel wasn't found or switcher is off, or user is bot - return
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Повідомлення видалено | ${options.message.member.nickname}`, iconURL: options.message.member.displayAvatarURL({ dynamic: true }) })
-        .setDescription(`[Перейти до повідомлення](${options.message.url})\n**Контент повідомлення:**\n` + options.message.content)
+        .setDescription(`[Перейти до повідомлення](${options.message.url})\n**Контент повідомлення:**\n` + options.message.content || `?` + `\n${options.message.attachments.map(i => i.url).join(`\n`)}`)
         .addFields(
             { name: 'Автор', value: `${options.message.author} (${options.message.author.tag})`, inline: true },
             { name: 'Канал', value: `${options.message.channel} (#${options.message.channel.name})`, inline: true }
@@ -31,12 +31,13 @@ module.exports = async function (type, client, options) {
         .addFields(
             { name: 'Автор', value: `${options.newMessage.author} (${options.newMessage.author.tag})`, inline: true },
             { name: 'Канал', value: `${options.newMessage.channel} (#${options.newMessage.channel.name})`, inline: true },
-            { name: 'Раніше:', value: `${options.oldMessage.content}` },
-            { name: 'Зараз:', value: `${options.newMessage.content}` }
+            { name: 'Раніше:', value: `${options.oldMessage.content || `?`}\n${`${options.oldMessage.attachments.map(i => i.url).join(`\n`)}` || ``}` },
+            { name: 'Зараз:', value: `${options.newMessage.content || `?`}\n${`${options.newMessage.attachments.map(i => i.url).join(`\n`)}` || ``}` }
         )
         .setFooter({ text: `USID: ${options.newMessage.author.id}` })
         .setColor('Blue')
         .setTimestamp()
+        
         await channel.send({ embeds: [embed] })
     }
     //guildMemberUpdate
@@ -103,6 +104,7 @@ module.exports = async function (type, client, options) {
         .setTimestamp()
         await channel.send({ embeds: [embed] })
     }
+    //guildBanAdd
     else if(type === 'banAdd'){
         //Doesn't actyally work :(
 
@@ -117,6 +119,7 @@ module.exports = async function (type, client, options) {
         .setTimestamp()
         await channel.send({ embeds: [embed] })
     }
+    //guildBanRemove
     else if(type === 'banRemove'){
         //Doesn't actyally work :(
 
@@ -130,6 +133,39 @@ module.exports = async function (type, client, options) {
         .setColor('Yellow')
         .setTimestamp()
         await channel.send({ embeds: [embed] })
+    }
+    else if(type === 'voiceJ'){
+        console.log(`User joined`)
+
+        channel = await getlog(options.newVoiceState.guild, true)
+        if(!channel || await isOn(channel.guild, 'voiceJ') === false) return;
+
+        let embed = new EmbedBuilder()
+        .setAuthor({ name: `${options.newVoiceState.member.user.tag}`, iconURL: options.newVoiceState.member.user.displayAvatarURL({ dynamic: true }) })
+        .setDescription(`**Приєднався до ${options.newVoiceState.channel}**`)
+        .setFooter({ text: `USID: ${options.newVoiceState.id}` })
+        let msg = await channel.send({ embeds: [embed] })
+        require(`./voiceSession.js`)(options.newVoiceState.id, channel, 0, msg)
+    }
+    else if(type === 'voiceL'){
+        channel = await getlog(options.newVoiceState.guild, true)
+        if(!channel || await isOn(channel.guild, 'voiceL') === false) return;
+        console.log(`User left`)
+
+        let msg = await require(`./voiceSession.js`)(options.newVoiceState.id, channel, 2)
+        if(!msg.message) return;
+        msg.message.embeds[0].data.description = msg.message.embeds[0].data.description + `\n**Від'єднався, сессія тривала ${Math.floor((Date.now() - msg.time) / 1000)} секунд.**`
+        msg.message.edit({ embeds: [msg.message.embeds[0]] })
+    }
+    else if(type === 'voiceM'){
+        channel = await getlog(options.newVoiceState.guild, true)
+        if(!channel || await isOn(channel.guild, 'voiceM') === false) return;
+        console.log(`User moved`)
+
+        let msg = await require(`./voiceSession.js`)(options.newVoiceState.id, channel, 1)
+        if(!msg) return;
+        msg.embeds[0].data.description = msg.embeds[0].data.description + `\n=> ${options.newVoiceState.channel}`
+        msg.edit({ embeds: [msg.embeds[0]] })
     }
 };
 
