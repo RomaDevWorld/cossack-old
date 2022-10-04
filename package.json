@@ -1,6 +1,6 @@
 {
   "name": "cossac",
-  "version": "0.0.1",
+  "version": "dev",
   "description": "The open-sourse Discord bot, ukrainian-lang-only.",
   "main": "index.js",
   "scripts": {

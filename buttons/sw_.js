@@ -9,8 +9,9 @@ module.exports = {
     async execute(interaction){
         const types = {
             'sw_bans': ['banAdd', 'banRemove'],
-            'sw_msgs': ['msgEdit', 'msgDelete'],
-            'sw_members': ['memAdd', 'memRemove', 'memUpdate']
+            'sw_msgs': ['msgUpdate', 'msgDelete'],
+            'sw_members': ['memAdd', 'memRemove', 'memUpdate'],
+            'sw_voices': ['voiceL', 'voiceJ', 'voiceM']
         } //Types handler
 
         if(interaction.component.data.style === 3){
@@ -19,7 +20,7 @@ module.exports = {
             interaction.component.data.style = 4 //Change button style to DANGER
         }else{
             //Turn on the switch
-            if(!exist(await db.get(`${interaction.guild.id}.types`), types[interaction.customId])) await db.push(`${interaction.guild.id}.types`, types[interaction.customId])
+            if(!exist(await db.get(`${interaction.guild.id}.types`) || [], types[interaction.customId])) await db.push(`${interaction.guild.id}.types`, types[interaction.customId])
             //If database has none of specified types - add a types to database
             interaction.component.data.style = 3 //Change button style to SUCCESS
         }

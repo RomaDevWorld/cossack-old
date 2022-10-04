@@ -124,11 +124,13 @@ module.exports = {
 
                 const types = {
                     'sw_bans': ['banAdd', 'banRemove'],
-                    'sw_msgs': ['msgEdit', 'msgDelete'],
-                    'sw_members': ['memAdd', 'memRemove', 'memUpdate']
+                    'sw_msgs': ['msgUpdate', 'msgDelete'],
+                    'sw_members': ['memAdd', 'memRemove', 'memUpdate'],
+                    'sw_voices': ['voiceL', 'voiceJ', 'voiceM']
                 } //Types handler
                 
-                const sws = await logs.get(`${interaction.guild.id}.types`) //It's easier 
+                let sws = await logs.get(`${interaction.guild.id}.types`) //It's easier 
+                if(!sws) sws = []
 
                 const msg = new ButtonBuilder() //First button
                 .setCustomId('sw_msgs')
@@ -148,7 +150,13 @@ module.exports = {
                 if(exist(sws, types['sw_members'])) mem.setStyle(ButtonStyle.Success) //Does the same thing
                 else mem.setStyle(ButtonStyle.Danger)
 
-                const row = new ActionRowBuilder().addComponents([msg, ban, mem]) //Creates an action row with all the buttons
+                const voi = new ButtonBuilder()
+                .setCustomId('sw_voices')
+                .setLabel('Голосові (Зайшов/Вийшов/Змінив)')
+                if(exist(sws, types['sw_voices'])) voi.setStyle(ButtonStyle.Success) //Does the same thing
+                else voi.setStyle(ButtonStyle.Danger)
+
+                const row = new ActionRowBuilder().addComponents([msg, ban, mem, voi]) //Creates an action row with all the buttons
                 const log = await logs.get(`${interaction.guild.id}.channel`) //Gets a logs channel id from db
                 
                 const embed = new EmbedBuilder()
