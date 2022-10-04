@@ -135,8 +135,6 @@ module.exports = async function (type, client, options) {
         await channel.send({ embeds: [embed] })
     }
     else if(type === 'voiceJ'){
-        console.log(`User joined`)
-
         channel = await getlog(options.newVoiceState.guild, true)
         if(!channel || await isOn(channel.guild, 'voiceJ') === false) return;
 
@@ -150,7 +148,6 @@ module.exports = async function (type, client, options) {
     else if(type === 'voiceL'){
         channel = await getlog(options.newVoiceState.guild, true)
         if(!channel || await isOn(channel.guild, 'voiceL') === false) return;
-        console.log(`User left`)
 
         let msg = await require(`./voiceSession.js`)(options.newVoiceState.id, channel, 2)
         if(!msg.message) return;
@@ -160,7 +157,6 @@ module.exports = async function (type, client, options) {
     else if(type === 'voiceM'){
         channel = await getlog(options.newVoiceState.guild, true)
         if(!channel || await isOn(channel.guild, 'voiceM') === false) return;
-        console.log(`User moved`)
 
         let msg = await require(`./voiceSession.js`)(options.newVoiceState.id, channel, 1)
         if(!msg) return;
