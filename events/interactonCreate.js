@@ -49,7 +49,7 @@ module.exports = {
             for (let i in buttons){ //Loop throught every button
                 if(interaction.customId.startsWith(buttons[i])) button = require(`../buttons/${buttons[i]}.js`) //If interaction.customId starts with button's name, define button file
             }
-            if(!button) return await interaction.reply({ embeds: [{ author: { name: 'Дідько! Щось сталось не так! Спробуйте піздніше.' }, color: 0xcc2929 }], ephemeral: true }) //Return an error if button is not exist
+            if(!button) return; //Return an if button file is not exist
             if(button.permission){ //If button file has permissions
                 let permissionBit = new PermissionsBitField([button.permission]) //Make a permissions bit
                 if(!interaction.member.permissions.has(permissionBit)) return await interaction.reply({ embeds: [{ author: { name: 'Недостатньо прав!' }, color: 0xcc7229 }], ephemeral: true }) //Return if user doesn't have specified permissions
