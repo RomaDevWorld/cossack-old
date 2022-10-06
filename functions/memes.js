@@ -1,7 +1,7 @@
 module.exports = function (type) { 
     let array //Array variable
 
-    if(type = 1){ //If type is 1
+    if(type === 1){ //If type is 1
         array = [
             "https://youtu.be/Hy8kmNEo1i8",
             "https://youtu.be/t0I4mTEdAf8",
@@ -24,7 +24,21 @@ module.exports = function (type) {
             "https://youtu.be/K4dAkcp6zrE",
             "https://youtu.be/g4mHPeMGTJM"
         ]
-    }else{
+    }
+    else if(type === 2){
+        array = [
+            '**Упс! Ми вронили магічний шар!**',
+            '**Чітке "Ні."**',
+            '**Чітке "Так."**',
+            '**В магічного шара є сумніви..**',
+            '**Духи кажуть "Так.."**\nАле чи можна їм довіряти?',
+            '**Духи кажуть "Так.."**\nАле чи можна їм довіряти?',
+            '**404: Не знайдено**',
+            '**Духи засмучені цим запитанням**',
+            '**Духам подобається Ваше запитання**'
+        ]
+    }
+    else{
         array = ['null']
     }
     return array[Math.floor(Math.random()*array.length)]; //Get random item from defined array
