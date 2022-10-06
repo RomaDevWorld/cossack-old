@@ -166,7 +166,7 @@ module.exports = async function (type, client, options) {
 };
 
 async function getlog(guild, bool) {
-    if(bool === true){ //For some reason i've added an boolean?
+    if(bool === true){ //For some reason i've added a boolean?
         return guild.channels.cache.get(await db.get(`${guild.id}.channel`)) //Returns a channel, that have been found from db(or not)
     } 
     return await db.get(guild.id)
