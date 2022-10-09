@@ -8,11 +8,13 @@ module.exports = async function (client) {
         let channel = await guild.channels.cache.get(database[i].value.id) //Gets a channel from value
         if(guild && channel){
                 try{
-                    let members = await guild.members.fetch() //Fetches all the guild members
                     let name = database[i].value.name //Defines a name
-                        .replace(`ON`, members.filter(mem => mem.presence && !mem.user.bot).size) //Replaces "ON" with filtered members that is offline, and a bots
-                        .replace(`ALL`, members.filter(mem => !mem.user.bot).size) //Replaces 'ALL' with filtered members that is bots
+                        .replace(`ON`, await getOnline(guild)) //Replaces "ON" with filtered members that is offline, and a bots
+                        .replace(`ALL`, await getMembers(guild)) //Replaces 'ALL' with filtered members that is bots
+                        .replace('BOT', await getBots(guild))
+                        .replace('VC', await getVoices(guild))
                      if(channel.name !== name) channel.setName(name) //If previous channel's name doesn't equal new name - change name
+                     console.log(name)
                 }catch(err){
                     console.error(err) //Throw error if error
                 }
@@ -21,3 +23,20 @@ module.exports = async function (client) {
         }
     }
 };
+
+async function getOnline(guild) {
+    let members = await guild.members.fetch()
+    return members.filter(mem => ['online', 'idle', 'dnd'].includes(mem.presence?.status) && !mem.user.bot).size
+}
+async function getMembers(guild) {
+    let members = await guild.members.fetch()
+    return members.filter(mem => !mem.user.bot).size
+}
+async function getBots(guild) {
+    let members = await guild.members.fetch()
+    return members.filter(mem => mem.user.bot).size
+}
+async function getVoices(guild) {
+    let members = await guild.members.fetch()
+    return members.filter(mem => mem.voice.channel).size
+}
