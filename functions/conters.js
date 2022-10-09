@@ -14,7 +14,6 @@ module.exports = async function (client) {
                         .replace('BOT', await getBots(guild))
                         .replace('VC', await getVoices(guild))
                      if(channel.name !== name) channel.setName(name) //If previous channel's name doesn't equal new name - change name
-                     console.log(name)
                 }catch(err){
                     console.error(err) //Throw error if error
                 }
