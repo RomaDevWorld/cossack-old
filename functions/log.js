@@ -1,6 +1,8 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, AuditLogEvent } = require('discord.js');
 const { QuickDB } = require('quick.db')
 const db = new QuickDB().table('logs')
+const moment = require('moment')
+moment.locale('uk')
 
 module.exports = async function (type, client, options) {
     var channel
@@ -56,7 +58,14 @@ module.exports = async function (type, client, options) {
             .setFooter({ text: `USID: ${options.newMember.id}` })
             .setColor('Blue')
             .setTimestamp()
-            await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
+            let log = await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
+
+            const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
+            if(!audit || audit.target.id !== options.newMember.id) return;
+
+            embed.addFields({ name: 'Модератор', value: `${audit.executor}` })
+            log.edit({ embeds: [embed] })
+
         }
 
         let embed = new EmbedBuilder()
@@ -77,19 +86,75 @@ module.exports = async function (type, client, options) {
             });
             embed.addFields({ name: `Додані ролі:`, value: adRole.join(`\n`) }) //Add a field with the new roles
         }
-        if(embed.data.fields) await channel.send({ embeds: [embed] }) //If at least one of the fields was added - send embed to the log
+        if(embed.data.fields){
+            let log = await channel.send({ embeds: [embed] }) //If at least one of the fields was added - send embed to the log
+            const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
+            if(!audit || audit.target.id !== options.newMember.id) return;
+
+            embed.addFields({ name: 'Модератор', value: `${audit.executor}` })
+            log.edit({ embeds: [embed] })
+        } 
+
+        if(options.oldMember.communicationDisabledUntil && !options.newMember.communicationDisabledUntil){
+            const embed = new EmbedBuilder()
+            .setAuthor({ name: `Участник розм'ючений | ${options.newMember.nickname || options.newMember.user.username}`, iconURL: options.newMember.displayAvatarURL({ dynamic: true }) })
+            .setColor('Green')
+            .setTimestamp()
+            .setFooter({ text: `USID: ${options.newMember.id}` })
+            .addFields({
+                name: 'Участник', value: `${options.newMember}`
+            })
+            let log = await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
+
+            const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
+            if(!audit || audit.target.id !== options.newMember.id) return;
+
+            embed.addFields({ name: 'Модератор', value: `${audit.executor}` })
+            log.edit({ embeds: [embed] })
+
+        }else if(options.newMember.communicationDisabledUntil && !options.oldMember.communicationDisabledUntil){
+            let time = options.newMember.communicationDisabledUntil
+            const embed = new EmbedBuilder()
+            .setAuthor({ name: `Участник зам'ючений | ${options.newMember.nickname || options.newMember.user.username}`, iconURL: options.newMember.displayAvatarURL({ dynamic: true }) })
+            .setColor('Red')
+            .setTimestamp()
+            .setFooter({ text: `USID: ${options.newMember.id}` })
+            .addFields({
+                name: 'Участник', value: `${options.newMember}`,
+                name: "Час блокування", value: `${moment(time).fromNow()} (${moment(time).format('L')})`
+            })
+            let log = await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
+
+            const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
+            if(!audit || audit.target.id !== options.newMember.id) return;
+
+            embed.addFields({ name: 'Модератор', value: `${audit.executor}` })
+            log.edit({ embeds: [embed] })
+        }
     }
     else if(type === 'memRemove'){
         channel = await getlog(options.member.guild, true)
         if(!channel || await isOn(channel.guild, 'memRemove') === false) return; //Does the same
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Учасник вийшов | ${options.member.nickname}`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Участник вийшов | ${options.member.nickname}`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`${options.member} (${options.member.user.tag})`)
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Orange')
         .setTimestamp()
-        await channel.send({ embeds: [embed] })
+        let log = await channel.send({ embeds: [embed] })
+
+        const audit = await fetchLog(channel.guild, AuditLogEvent.MemberKick)
+        if(!audit || audit.target.id !== options.member.id) return;
+
+        let kickEmbed = new EmbedBuilder()
+        .setAuthor({ name: `Участник вигнаний | ${options.member.user.username}`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
+        .setDescription(`${options.member} (${options.member.user.tag})`)
+        .addFields({ name: 'Модератор', value: `${audit.executor}` })
+        .setFooter({ text: `ID: ${options.member.id}` })
+        .setColor('Red')
+        .setTimestamp()
+        log.edit({ embeds: [kickEmbed] })
     }
     //guildMemberAdd
     else if(type === 'memAdd'){
@@ -97,7 +162,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'memAdd') === false) return; //Does the same
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Учасник зайшов`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Участник зайшов`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`${options.member} (${options.member.user.tag})`)
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Green')
@@ -112,7 +177,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild.guild, 'banAdd') === false) return;
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Учасник заблокований | ${options.user.username}`, iconURL: options.user.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Участник заблокований | ${options.user.username}`, iconURL: options.user.displayAvatarURL({ dynamic: true }) })
         .setDescription(`${options.user} (${options.member.user.tag})`)
         .setFooter({ text: `ID: ${options.user.id}` })
         .setColor('Red')
@@ -127,7 +192,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'banRemove') === false) return;
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Учасник розблокований | ${options.user.username}`, iconURL: options.user.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Участник розблокований | ${options.user.username}`, iconURL: options.user.displayAvatarURL({ dynamic: true }) })
         .setDescription(`${options.user} (${options.member.user.tag})`)
         .setFooter({ text: `ID: ${options.user.id}` })
         .setColor('Yellow')
@@ -178,4 +243,12 @@ async function isOn(guild, type){
     }else{ //Nah
         return false
     }
+}
+
+async function fetchLog(guild, type){
+    const fetchedLogs = await guild.fetchAuditLogs({
+		limit: 1,
+		type: type,
+	});
+    return fetchedLogs.entries.first();
 }
