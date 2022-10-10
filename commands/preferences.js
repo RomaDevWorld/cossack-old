@@ -6,7 +6,7 @@ const exist = require('../functions/multValue.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('preferences')
+        .setName('prefs')
         .setDescription('Змінює налаштування бота щодо сервера.')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(subcommand => 
@@ -14,6 +14,13 @@ module.exports = {
             .setName("vclobby")
             .setDescription(`Встановити канал для автоматичного створення приватних голосових каналів. (Не вказано - видалити.)`)
             .addChannelOption(option => option.setName(`lobby`).setDescription(`Голосовий канал`))  
+        )
+        .addSubcommand(subcommand => 
+            subcommand
+            .setName("colors")
+            .setDescription(`Префікс для створення "Ролей кольору"`)
+            .addStringOption(option => option.setName(`prefix`).setDescription(`Префікс (Макс 3 символи, якщо не вказано - видалити)`))
+            .addIntegerOption(option => option.setName('max').setDescription('Максимальна кількість ролей в одного учасника'))
         )
         .addSubcommandGroup(group => 
             group
@@ -73,6 +80,35 @@ module.exports = {
                     .setFooter({ text: `Канал: ${channel.name}` })
                     return await interaction.reply({embeds: [embed], ephemeral: true}) //Create an embed and send it 
                 }
+            }
+            if(interaction.options.getSubcommand() === `colors`){
+                let misc = db.table("misc")
+                let prefix = interaction.options.getString('prefix')
+                var text = ``
+
+                if(!prefix){
+                    await misc.delete(`${interaction.guild.id}.prefix`)
+                    text += 'Префікс ролей видалено.'
+                }else{
+                    if(prefix.length > 3) prefix = prefix.slice(0, 3)
+                    await misc.set(`${interaction.guild.id}.prefix`, prefix)
+                    text += `Префікс ролей \`${prefix}\``
+                }
+
+                let max = interaction.options.getInteger('max')
+                if(max){
+                    if(max > 25) max = 25
+                    if(max < 1) max = 1
+                    await misc.set(`${interaction.guild.id}.maximum`, max)
+                    text += `\nМаксимальна кількість ролей: ${max}`
+                }
+
+                let embed = new EmbedBuilder()
+                .setAuthor({ name: 'Налаштування оновлено!', url: memes(1) })
+                .setDescription(text)
+                .setColor('Green')
+                .setFooter({ text: 'Створіть ролі, назва яких починається з встановленого префіксу' })
+                await interaction.reply({ embeds: [embed], ephemeral: true })
             }
         }
 
@@ -170,5 +206,6 @@ module.exports = {
                 await interaction.reply({ embeds: [embed], components: [row], ephemeral: true }) //Sends an embed with all the buttons
             }
         }
+
     }
 }

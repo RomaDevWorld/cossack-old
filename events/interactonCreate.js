@@ -4,11 +4,16 @@ const {
     ActionRowBuilder, 
     ButtonBuilder, 
     ButtonStyle, 
-    PermissionsBitField } = require('discord.js');
+    PermissionsBitField, 
+    TextInputStyle,
+    RPCCloseEventCodes} = require('discord.js');
 
 const cd = new Set(); //New set for the cooldowns
 const cdTime = 5000; //If you want to, you can change the cooldown time (miliseconds)
 
+const { QuickDB } = require('quick.db')
+const db = new QuickDB()
+ 
 module.exports = {
     name: 'interactionCreate',
     once: false,
@@ -55,6 +60,49 @@ module.exports = {
                 if(!interaction.member.permissions.has(permissionBit)) return await interaction.reply({ embeds: [{ author: { name: 'Недостатньо прав!' }, color: 0xcc7229 }], ephemeral: true }) //Return if user doesn't have specified permissions
             }
             await button.execute(interaction) //Execute button
+        }else if(interaction.isSelectMenu()){
+            if (interaction.customId === 'roles') {
+                let prefix = await db.table('misc').get(`${interaction.guild.id}.prefix`)
+                let max = await db.table('misc').get(`${interaction.guild.id}.maximum`)
+                if(!prefix){
+                    await interaction.message.delete()
+                    return interaction.reply({ content: 'На цьому сервері більше не працюють ролі для видачі', ephemeral: true })
+                }
+
+                var text = ``
+
+                let list = interaction.message.components[0].components[0].data.options
+
+                if(max && interaction.message.components[0].components[0].data.max_values !== max){
+                    await interaction.reply({ content: 'Цей список не відповідає дійсності, ми оновили його.', ephemeral: true })
+                    interaction.message.components[0].components[0].data.max_values = max
+                    return interaction.message.edit({ components: [interaction.message.components[0]] })
+                }
+
+                for(let i in list){
+                    let role = interaction.guild.roles.cache.get(list[i].value)
+                    if(!role || !role.name.startsWith(prefix)) return await interaction.reply({ content: 'Помилка. Спробуйте вивести список щераз', ephemeral: true })
+                    if(interaction.values.includes(list[i].value)){
+                        //Add role
+                        if(!interaction.member.roles.cache.has(role.id)){
+                            interaction.member.roles.add((list[i].value))
+                            text += `Добавлено: ${role}\n`
+                        }
+                    }else{
+                        //Remove role
+                        if(interaction.member.roles.cache.has(role.id)){
+                            interaction.member.roles.remove((list[i].value))
+                            text += `Вилучено: ${role}\n`
+                        }
+                    }
+                }
+
+                const embed = new EmbedBuilder()
+                .setAuthor({ name: 'Ваші ролі оновлено!' })
+                .setColor('Random')
+                if(text.length >= 1) embed.setDescription(text)
+                await interaction.reply({ embeds: [embed], ephemeral: true })
+            }
         }
     }
 }
