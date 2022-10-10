@@ -11,11 +11,11 @@
 
 **Цей канал повинен бути доступним тільки для модераторів, а писати в ньому повинен тільки бот.**
 
-Встановіть канал за допомогою `/preferences log channel`
+Встановіть канал за допомогою `/prefs log channel`
 
 ![image](https://user-images.githubusercontent.com/50528338/192849873-99a71d01-0549-4fed-9609-096b19256d5a.png)
 
-**Також не забудьте вказати, які типи сповіщень будуть відправлятись в канал** `/preferences log switch`
+**Також не забудьте вказати, які типи сповіщень будуть відправлятись в канал** `/prefs log switch`
 
 ![image](https://user-images.githubusercontent.com/50528338/192850362-d0a6ea2d-8b53-4251-b3eb-584d200014ed.png)
 
@@ -23,7 +23,7 @@
 
 **Приватні голосові кімнати - це канали які створюються у Вас на сервері в окремій категорії і до яких буде мати доступ тільки їх творець та всі, кого він запросив**
 
-`/preferences vclobby`
+`/prefs vclobby`
 
 ![image](https://user-images.githubusercontent.com/50528338/192850697-13cfb929-c768-410e-8eac-62c0bf90e0ea.png)
 
@@ -31,7 +31,7 @@
 
 **Бот автоматично оновлює назву вказаного Вами каналу відповідно до кількості учасників на сервері.**
 
-`/preferences counter set`
+`/prefss counter set`
 
 ![image](https://user-images.githubusercontent.com/50528338/192851382-0781963e-5a1c-499a-af1d-3b30ca82731d.png)
 
