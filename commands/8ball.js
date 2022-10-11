@@ -5,7 +5,7 @@ const wait = require('node:timers/promises').setTimeout;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('8ball')
-        .setDescription('Задайте апитання і ми начаклуємо відповідь')
+        .setDescription('Задайте запитання і ми начаклуємо відповідь')
         .addStringOption(option => option.setName('question').setDescription('Питання шару').setRequired(true)),
     async execute(interaction) {
         await interaction.deferReply()
