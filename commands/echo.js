@@ -24,6 +24,10 @@ module.exports = {
             .addChoices(
                 { name: 'Червоний', value: 'Red' },
                 { name: 'Синій', value: 'Blue' },
+                { name: 'Зелений', value: 'Green' },
+                { name: 'Жовтий', value: "Gold" },
+                { name: 'Фіолетовий', value: "Purple" },
+                { name: 'Білий', value: 'White' }
             )
         )
         .addStringOption(option => option.setName('embed_footer').setDescription('Нижня секція ембеду'))
@@ -55,7 +59,7 @@ module.exports = {
         let embedImage = options.getAttachment('embed_image')
         let embedThumbnail = options.getAttachment('embed_thumbnail')
     
-        message.content = options.getString('text')
+        message.content = options.getString('text').replace(`!n`, `\n`)
     
         if(attachment && attachment.contentType.startsWith('image')) message.files = [attachment.url]
         
@@ -65,7 +69,7 @@ module.exports = {
         }else{
             if(embedAuthor) embed.setAuthor({ name: embedAuthor })
         }
-        if(embedDesc) embed.setDescription(embedDesc)
+        if(embedDesc) embed.setDescription(embedDesc).replace(`!n`, `\n`)
         if(embedColor) embed.setColor(embedColor)
         
         if(embedFooter && embedFooterIcon && embedFooterIcon.contentType.startsWith('image')){
