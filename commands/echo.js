@@ -58,8 +58,9 @@ module.exports = {
         let embedFooterIcon = options.getAttachment('embed_footericon')
         let embedImage = options.getAttachment('embed_image')
         let embedThumbnail = options.getAttachment('embed_thumbnail')
+        let text = options.getString('text')
     
-        message.content = options.getString('text').replace(`!n`, `\n`)
+        if(text) message.content = text.replace(`!n`, `\n`)
     
         if(attachment && attachment.contentType.startsWith('image')) message.files = [attachment.url]
         
