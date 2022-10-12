@@ -66,7 +66,7 @@ module.exports = {
                     .setAuthor({ name: `Лоббі видалено!`, url: require(`../functions/memes.js`)(1) })
                     .setColor('Orange')
                     .setDescription(`Учасники більше не зможуть створити нові приватні голосові канали.`)
-                    .setFooter({ text: 'Добавити: /preferences vclobby [lobby]' })
+                    .setFooter({ text: 'Добавити: /prefs vclobby [lobby]' })
                     return await interaction.reply({embeds: [embed], ephemeral: true}) //Create an embed and send it 
                 }else{
                     if(channel.type !== 2) return await interaction.reply({ embeds: [{ author: { name: 'Лоббі можна встановити тільки в якості голосового каналу.' }, color: 0xcc2929 }], ephemeral: true })
@@ -199,7 +199,7 @@ module.exports = {
                 .setAuthor({ name: `Перемикачі типів подій!`, iconURL: interaction.guild.iconURL() })
                 .setDescription(`Зелений колір кнопки [🟩] - подія **увімкнена**.\nЧервоний колір кнопки [🟥] - подія **вимкнена**.\n`)
                 .addFields([
-                    { name: `Канал для подій`, value: `${interaction.guild.channels.cache.get(log) || `Встановіть його через **/preferences logs channel**`}` } //Adds a field if channel was found, if not - hint how to set it
+                    { name: `Канал для подій`, value: `${interaction.guild.channels.cache.get(log) || `Встановіть його через **/prefs logs channel**`}` } //Adds a field if channel was found, if not - hint how to set it
                 ])
                 .setFooter({ text: `Натискання на кнопку увімкне або вимкне тип події` })
                 .setColor(`White`)

@@ -28,7 +28,6 @@ module.exports = {
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 5000 });
 
         collector.on('collect', m => {     
-            console.log(m.customId)    
             if(!members[m.user.id]){
                 let dice1 = Math.floor(Math.random() * (8 - 1 + 1) + 1)
                 let dice2 = Math.floor(Math.random() * (8 - 1 + 1) + 1)   

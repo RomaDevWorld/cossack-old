@@ -55,7 +55,7 @@ module.exports = {
                 .setAuthor({ name: `Відсутній канал лоббі!` })
                 .setColor('Orange')
                 .setDescription('На цьому сервері відсутній канал лоббі.\nЗверніться до адміністратора.')
-                .setFooter({ text: `Встановити: /preferences vclobby [lobby]` })
+                .setFooter({ text: `Встановити: /prefs vclobby [lobby]` })
                 return await interaction.reply({ embeds: [embed], ephemeral: true }) //Creates an embed then sends it
             }
 
