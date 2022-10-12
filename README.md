@@ -31,7 +31,7 @@
 
 **Бот автоматично оновлює назву вказаного Вами каналу відповідно до кількості учасників на сервері.**
 
-`/prefss counter set`
+`/prefs counter set`
 
 ![image](https://user-images.githubusercontent.com/50528338/192851382-0781963e-5a1c-499a-af1d-3b30ca82731d.png)
 
