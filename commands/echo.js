@@ -70,7 +70,7 @@ module.exports = {
         }else{
             if(embedAuthor) embed.setAuthor({ name: embedAuthor })
         }
-        if(embedDesc) embed.setDescription(embedDesc).replace(`!n`, `\n`)
+        if(embedDesc) embed.setDescription(embedDesc.replace(`!n`, `\n`))
         if(embedColor) embed.setColor(embedColor)
         
         if(embedFooter && embedFooterIcon && embedFooterIcon.contentType.startsWith('image')){
