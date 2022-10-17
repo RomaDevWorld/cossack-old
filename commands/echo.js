@@ -60,7 +60,7 @@ module.exports = {
         let embedThumbnail = options.getAttachment('embed_thumbnail')
         let text = options.getString('text')
     
-        if(text) message.content = text.replace(`!n`, `\n`)
+        if(text) message.content = text.replaceAll(`!n`, `\n`)
     
         if(attachment && attachment.contentType.startsWith('image')) message.files = [attachment.url]
         
@@ -70,7 +70,7 @@ module.exports = {
         }else{
             if(embedAuthor) embed.setAuthor({ name: embedAuthor })
         }
-        if(embedDesc) embed.setDescription(embedDesc.replace(`!n`, `\n`))
+        if(embedDesc) embed.setDescription(embedDesc.replaceAll(`!n`, `\n`))
         if(embedColor) embed.setColor(embedColor)
         
         if(embedFooter && embedFooterIcon && embedFooterIcon.contentType.startsWith('image')){
