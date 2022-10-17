@@ -2,7 +2,7 @@ const { ContextMenuCommandBuilder, ApplicationCommandType, EmbedBuilder } = requ
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
-        .setName('Отримати аватар учасника') //Context command name
+        .setName('Отримати аватар участника') //Context command name
         .setType(ApplicationCommandType.User), //Context command type
     async execute(interaction) {
         try{ //Trying to create an embed with user's avatar
@@ -14,7 +14,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed], ephemeral: true })
         }catch(err){ //Returns an error message if error (Probably target user has no avatar)
             console.log(err)
-            await interaction.reply({ embeds: [{ author: { name: 'Отакої! Виникла помилка, скоріше за все в учасника не встановлений аватар' }, color: 0xcc2929 }], ephemeral: true })
+            await interaction.reply({ embeds: [{ author: { name: 'Отакої! Виникла помилка, скоріше за все в участника не встановлений аватар' }, color: 0xcc2929 }], ephemeral: true })
         }
     }
 }

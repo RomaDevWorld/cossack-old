@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js')
 const { QuickDB } = require(`quick.db`)
 let memes = require(`../functions/memes.js`)
 const db = new QuickDB()
@@ -13,14 +13,14 @@ module.exports = {
             subcommand
             .setName("vclobby")
             .setDescription(`Встановити канал для автоматичного створення приватних голосових каналів. (Не вказано - видалити.)`)
-            .addChannelOption(option => option.setName(`lobby`).setDescription(`Голосовий канал`))  
+            .addChannelOption(option => option.setName(`lobby`).setDescription(`Голосовий канал`).addChannelTypes(ChannelType.GuildVoice))  
         )
         .addSubcommand(subcommand => 
             subcommand
             .setName("colors")
             .setDescription(`Префікс для створення "Ролей кольору"`)
             .addStringOption(option => option.setName(`prefix`).setDescription(`Префікс (Макс 3 символи, якщо не вказано - видалити)`))
-            .addIntegerOption(option => option.setName('max').setDescription('Максимальна кількість ролей в одного учасника'))
+            .addIntegerOption(option => option.setName('max').setDescription('Максимальна кількість ролей в одного участника'))
         )
         .addSubcommandGroup(group => 
             group
@@ -30,7 +30,7 @@ module.exports = {
                 subcommand
                 .setName(`channel`)
                 .setDescription(`Встановити спеціалізований канал для сповіщень`)    
-                .addChannelOption(option => option.setName(`channel`).setDescription(`Текстовий канал`).setRequired(true))
+                .addChannelOption(option => option.setName(`channel`).setDescription(`Текстовий канал`).setRequired(true).addChannelTypes(ChannelType.GuildText))
             )
             .addSubcommand(subcommand => 
                 subcommand
@@ -41,12 +41,12 @@ module.exports = {
         .addSubcommandGroup(group => 
             group
             .setName(`counter`)
-            .setDescription(`Лічильник учасників`)
+            .setDescription(`Лічильник участників`)
             .addSubcommand(subcommand => 
                 subcommand
                 .setName(`set`)
                 .setDescription(`Встановити лічильник`)    
-                .addChannelOption(option => option.setName(`channel`).setDescription(`Голосовий канал / Категорія`).setRequired(true))
+                .addChannelOption(option => option.setName(`channel`).setDescription(`Голосовий канал / Категорія`).setRequired(true).addChannelTypes(ChannelType.GuildCategory, ChannelType.GuildVoice))
                 .addStringOption(option => option.setName(`name`).setDescription(`Назва лічильнику (Опціонально)`))
             )
             .addSubcommand(subcommand => 
@@ -65,18 +65,16 @@ module.exports = {
                     let embed = new EmbedBuilder()
                     .setAuthor({ name: `Лоббі видалено!`, url: require(`../functions/memes.js`)(1) })
                     .setColor('Orange')
-                    .setDescription(`Учасники більше не зможуть створити нові приватні голосові канали.`)
+                    .setDescription(`Участники більше не зможуть створити нові приватні голосові канали.`)
                     .setFooter({ text: 'Добавити: /prefs vclobby [lobby]' })
                     return await interaction.reply({embeds: [embed], ephemeral: true}) //Create an embed and send it 
                 }else{
-                    if(channel.type !== 2) return await interaction.reply({ embeds: [{ author: { name: 'Лоббі можна встановити тільки в якості голосового каналу.' }, color: 0xcc2929 }], ephemeral: true })
-                    //Checks the type of specified channel, if it's not a VoiceChannel - return.
 
                     await lobbies.set(interaction.guild.id, channel.id) //Set lobby channel to the db
                     let embed = new EmbedBuilder()
                     .setAuthor({ name: `Лоббі добавлено/змінено!`, url: require(`../functions/memes.js`)(1) })
                     .setColor('Green')
-                    .setDescription('Тепер учасники можуть створювати приватні голосові канали, заходячи в канал або прописуючи відповідну команду.')
+                    .setDescription('Тепер участники можуть створювати приватні голосові канали, заходячи в канал або прописуючи відповідну команду.')
                     .setFooter({ text: `Канал: ${channel.name}` })
                     return await interaction.reply({embeds: [embed], ephemeral: true}) //Create an embed and send it 
                 }
@@ -124,8 +122,7 @@ module.exports = {
                 await interaction.reply({ embeds: [embed], ephemeral: true })  //Create an embed and send it
             }else{
                 let channel = interaction.options.getChannel('channel'); //Gets a channel from interaction
-                if(![2,4].includes(channel.type)) return await interaction.reply(`Лічильник можна встановити тільки на голосовий канал або категорію`) //Checks a type of specified channel, if it's not VoiceChannel or Category - return
-                await counters.set(`${interaction.guild.id}`, { id: channel.id, name: interaction.options.getString(`name`) || `Учасники: ON/ALL` }) //Sets a value at the db
+                await counters.set(`${interaction.guild.id}`, { id: channel.id, name: interaction.options.getString(`name`) || `Участники: ON/ALL` }) //Sets a value at the db
 
                 let embed = new EmbedBuilder()
                 .setColor(`Green`)
@@ -137,7 +134,7 @@ module.exports = {
                     },
                     {
                         name: `Назва`,
-                        value: `\`${interaction.options.getString(`name`) || `Учасники: ON/ALL`}\``
+                        value: `\`${interaction.options.getString(`name`) || `Участники: ON/ALL`}\``
                     }
                 )
                 .setFooter({ text: `Лічильник оновлюється кожні 5 хвилин (Обмеження API)` })
@@ -182,7 +179,7 @@ module.exports = {
 
                 const mem = new ButtonBuilder()
                 .setCustomId('sw_members')
-                .setLabel('Зміна учасника (Нікнейм/Роль)')
+                .setLabel('Зміна участника (Нікнейм/Роль)')
                 if(exist(sws, types['sw_members'])) mem.setStyle(ButtonStyle.Success) //Does the same thing
                 else mem.setStyle(ButtonStyle.Danger)
 

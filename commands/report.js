@@ -26,7 +26,7 @@ module.exports = {
             }
             setTimeout(() => { delete count[message.author.id] }, 60000) //create timeout
         }else{
-            if(count[message.author.id].members.includes(interaction.user.id)) return await interaction.reply({ embeds: [{ author: { name: 'Ви вже поскаржились на цього учасника!' }, color: 0xcc2929 }], ephemeral: true }) //Return if user allready reported this author
+            if(count[message.author.id].members.includes(interaction.user.id)) return await interaction.reply({ embeds: [{ author: { name: 'Ви вже поскаржились на цього участника!' }, color: 0xcc2929 }], ephemeral: true }) //Return if user allready reported this author
             count[message.author.id].members.push(interaction.user.id) //Push interaction.user's id to an array
 
             let dbc = await db.get(`${interaction.guild.id}.channel`) //Get log channel id from db
@@ -53,7 +53,7 @@ module.exports = {
                 );
                 let embed = new EmbedBuilder() //Make the new embed
                 .setAuthor({ name: `Нова скарга! (${count[message.author.id].members.length}/${repstomute})` }) //Add an author to an embed
-                .addFields({ name: `Учасник`, value: `${message.author}` }) //Add a field with the author's name
+                .addFields({ name: `Участник`, value: `${message.author}` }) //Add a field with the author's name
     
                 if((count[message.author.id].members.length / repstomute * 100) === 100){ //if user has been reported enought times
                     embed //Add color, desc, footer to the embed

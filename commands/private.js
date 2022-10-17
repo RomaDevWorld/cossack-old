@@ -19,7 +19,7 @@ module.exports = {
             .addSubcommand(subcommand => 
                 subcommand
                 .setName(`public`)
-                .setDescription(`Відкрити доступ до цього каналу усім учасникам серверу`)  
+                .setDescription(`Відкрити доступ до цього каналу усім участникам серверу`)  
                 .addBooleanOption(option => option.setName('bool').setDescription('True - відкритий / False - закритий').setRequired(true))
             )
             .addSubcommand(subcommand => 
@@ -31,14 +31,14 @@ module.exports = {
         .addSubcommand(subcommand => 
             subcommand
             .setName(`invite`)
-            .setDescription(`Надати право учаснику цього серверу заходити та розмовляти у Вашому каналі.`)    
-            .addUserOption(option => option.setName(`member`).setDescription(`Учасник цього серверу`).setRequired(true))
+            .setDescription(`Надати право участнику цього серверу заходити та розмовляти у Вашому каналі.`)    
+            .addUserOption(option => option.setName(`member`).setDescription(`Участник цього серверу`).setRequired(true))
         )
         .addSubcommand(subcommand => 
             subcommand
             .setName(`kick`)
-            .setDescription(`Відключити та заборонити запрошеному учаснику приєднуватись до Вашого каналу.`)    
-            .addUserOption(option => option.setName(`member`).setDescription(`Учасник цього серверу`).setRequired(true))
+            .setDescription(`Відключити та заборонити запрошеному участнику приєднуватись до Вашого каналу.`)    
+            .addUserOption(option => option.setName(`member`).setDescription(`Участник цього серверу`).setRequired(true))
         )
         .addSubcommand(subcommand => 
             subcommand
@@ -114,7 +114,7 @@ module.exports = {
                 else if(num < 2) limi = 2 //If integer is less than 2 = limit-2
                 else limi = num //Integer is limit
                 channel.setUserLimit(limi) //Set channel userlimit to limit
-                return await interaction.reply({ embeds: [{ author: { name: `Ліміт учасників - ${limi}` }, color: 0x2CF5AA }], ephemeral: true }); //Send a sucess message
+                return await interaction.reply({ embeds: [{ author: { name: `Ліміт участників - ${limi}` }, color: 0x2CF5AA }], ephemeral: true }); //Send a sucess message
             }else if(interaction.options.getSubcommand() === `delete`){ //'delete' subcommand
                 require('../functions/vc_delete.js')(interaction.member, channel, interaction.client) //Require a function that will delete channel
                 return await interaction.reply({ embeds: [{ author: { name: `Канал видалений.` }, color: 0x2CF5AA }], ephemeral: true }); //Send a sucess message 

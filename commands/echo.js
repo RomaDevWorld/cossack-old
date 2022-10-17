@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,7 +13,7 @@ module.exports = {
                     { name: 'Бот', value: 'bot' },
                     { name: 'Сервер (Webhook)', value: 'server' },
                 ))
-        .addChannelOption(option => option.setName('channel').setDescription('Канал відправки'))
+        .addChannelOption(option => option.setName('channel').setDescription('Канал відправки').addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement))
         .addAttachmentOption(option => option.setName('attachment').setDescription('Файл повідомлення'))
         .addStringOption(option => option.setName('embed_author').setDescription('Заголовок ембеду')) //Embeds
         .addAttachmentOption(option => option.setName('embed_authoricon').setDescription('Картинка біля заголовку'))
@@ -46,7 +46,7 @@ module.exports = {
         var message = {}
 
         let channel
-        if(options.getChannel('channel') && [0, 5, 10, 11, 12, 15].includes(options.getChannel('channel').type)) channel = options.getChannel('channel')
+        if(options.getChannel('channel')) channel = options.getChannel('channel')
         else channel = interaction.channel
 
         let attachment = options.getAttachment('attachment')
