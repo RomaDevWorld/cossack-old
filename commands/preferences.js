@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js')
 const { QuickDB } = require(`quick.db`)
 let memes = require(`../functions/memes.js`)
 const db = new QuickDB()
@@ -13,7 +13,7 @@ module.exports = {
             subcommand
             .setName("vclobby")
             .setDescription(`Встановити канал для автоматичного створення приватних голосових каналів. (Не вказано - видалити.)`)
-            .addChannelOption(option => option.setName(`lobby`).setDescription(`Голосовий канал`))  
+            .addChannelOption(option => option.setName(`lobby`).setDescription(`Голосовий канал`).addChannelTypes(ChannelType.GuildVoice))  
         )
         .addSubcommand(subcommand => 
             subcommand
@@ -30,7 +30,7 @@ module.exports = {
                 subcommand
                 .setName(`channel`)
                 .setDescription(`Встановити спеціалізований канал для сповіщень`)    
-                .addChannelOption(option => option.setName(`channel`).setDescription(`Текстовий канал`).setRequired(true))
+                .addChannelOption(option => option.setName(`channel`).setDescription(`Текстовий канал`).setRequired(true).addChannelTypes(ChannelType.GuildText))
             )
             .addSubcommand(subcommand => 
                 subcommand
@@ -46,7 +46,7 @@ module.exports = {
                 subcommand
                 .setName(`set`)
                 .setDescription(`Встановити лічильник`)    
-                .addChannelOption(option => option.setName(`channel`).setDescription(`Голосовий канал / Категорія`).setRequired(true))
+                .addChannelOption(option => option.setName(`channel`).setDescription(`Голосовий канал / Категорія`).setRequired(true).addChannelTypes(ChannelType.GuildCategory, ChannelType.GuildVoice))
                 .addStringOption(option => option.setName(`name`).setDescription(`Назва лічильнику (Опціонально)`))
             )
             .addSubcommand(subcommand => 
@@ -69,8 +69,6 @@ module.exports = {
                     .setFooter({ text: 'Добавити: /prefs vclobby [lobby]' })
                     return await interaction.reply({embeds: [embed], ephemeral: true}) //Create an embed and send it 
                 }else{
-                    if(channel.type !== 2) return await interaction.reply({ embeds: [{ author: { name: 'Лоббі можна встановити тільки в якості голосового каналу.' }, color: 0xcc2929 }], ephemeral: true })
-                    //Checks the type of specified channel, if it's not a VoiceChannel - return.
 
                     await lobbies.set(interaction.guild.id, channel.id) //Set lobby channel to the db
                     let embed = new EmbedBuilder()
@@ -124,7 +122,6 @@ module.exports = {
                 await interaction.reply({ embeds: [embed], ephemeral: true })  //Create an embed and send it
             }else{
                 let channel = interaction.options.getChannel('channel'); //Gets a channel from interaction
-                if(![2,4].includes(channel.type)) return await interaction.reply(`Лічильник можна встановити тільки на голосовий канал або категорію`) //Checks a type of specified channel, if it's not VoiceChannel or Category - return
                 await counters.set(`${interaction.guild.id}`, { id: channel.id, name: interaction.options.getString(`name`) || `Участники: ON/ALL` }) //Sets a value at the db
 
                 let embed = new EmbedBuilder()
