@@ -215,8 +215,8 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'voiceL') === false) return;
 
         let msg = await require(`./voiceSession.js`)(options.newVoiceState.id, channel, 2)
-        if(!msg.message) return;
-        msg.message.embeds[0].data.description = msg.message.embeds[0].data.description + `\n**Від'єднався, сессія тривала ${Math.floor((Date.now() - msg.time) / 1000)} секунд.**`
+        if(!msg) return;
+        msg.message.embeds[0].data.description = (msg.message.embeds[0].data.description + `\n**Від'єднався, сессія тривала ${new Date(Date.now() - msg.time).toISOString().slice(11, 19)}**`).slice(0, 4000)
         msg.message.edit({ embeds: [msg.message.embeds[0]] })
     }
     else if(type === 'voiceM'){
@@ -225,7 +225,7 @@ module.exports = async function (type, client, options) {
 
         let msg = await require(`./voiceSession.js`)(options.newVoiceState.id, channel, 1)
         if(!msg) return;
-        msg.embeds[0].data.description = msg.embeds[0].data.description + `\n=> ${options.newVoiceState.channel}`
+        msg.embeds[0].data.description = (msg.embeds[0].data.description + `\n=> ${options.newVoiceState.channel}`).slice(0, 4000)
         msg.edit({ embeds: [msg.embeds[0]] })
     }
 };

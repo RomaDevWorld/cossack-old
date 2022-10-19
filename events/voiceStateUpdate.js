@@ -16,7 +16,7 @@ module.exports = {
                 if(set){
                      //If user allready has a private channel
                     if(channel){
-                        cur.setChannel(channel) //If channel - set user's voicechannel to his private channel  
+                        cur.setChannel(channel).catch(err => { console.error(err) }) //If channel - set user's voicechannel to his private channel  
                     } 
                 }else{
                     require("../functions/vc_create.js")(cur.member, cur.guild, client) //Execute function, that will create a new private channel
@@ -31,10 +31,10 @@ module.exports = {
         }else if(!oldVoiceState.channel && newVoiceState.channel){
             //User joined
             await log('voiceJ', client, { newVoiceState, oldVoiceState }) //Execute the function
-        }else{
+        }else if(oldVoiceState.channel && newVoiceState.channel){
+            if(oldVoiceState.channel.id === newVoiceState.channel.id) return;
             //User moved
             await log('voiceM', client, { newVoiceState, oldVoiceState }) //Execute the function
         }
-
     }
 }
