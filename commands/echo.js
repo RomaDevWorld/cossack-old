@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require('discord.js')
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,9 +25,10 @@ module.exports = {
                 { name: 'Червоний', value: 'Red' },
                 { name: 'Синій', value: 'Blue' },
                 { name: 'Зелений', value: 'Green' },
-                { name: 'Жовтий', value: "Gold" },
+                { name: 'Жовтий', value: "Yellow" },
                 { name: 'Фіолетовий', value: "Purple" },
-                { name: 'Білий', value: 'White' }
+                { name: 'Білий', value: 'White' },
+                { name: 'Золотий', value: 'Gold' },
             )
         )
         .addStringOption(option => option.setName('embed_footer').setDescription('Нижня секція ембеду'))
@@ -36,8 +37,6 @@ module.exports = {
         .addAttachmentOption(option => option.setName('embed_thumbnail').setDescription('Маленьке зображення ембеду'))
         ,
     async execute(interaction) {
-
-        await interaction.deferReply({ ephemeral: true })
 
         let options = interaction.options
 
@@ -48,6 +47,8 @@ module.exports = {
         let channel
         if(options.getChannel('channel')) channel = options.getChannel('channel')
         else channel = interaction.channel
+
+        await interaction.reply({ embeds: [{ description: '**Формуємо предперегляд.. Це може зайняти трохи часу** \n\nЦікавий факт, на випадок якщо це триває достатньо довго:\n' + require('../functions/memes.js')(3) }], ephemeral: true })
 
         let attachment = options.getAttachment('attachment')
         let embedAuthor = options.getString('embed_author')
@@ -82,8 +83,27 @@ module.exports = {
         if(embedThumbnail && embedThumbnail.contentType.startsWith('image')) embed.setThumbnail(embedThumbnail.url)
             
         if(Object.keys(embed.data).length !== 0) message.embeds = [embed] || []
-    
-        if(options.getString('author') === 'server'){
+
+        let uni = Math.floor(Date.now() / 1000)
+
+        const row = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel('Натисніть щоб відправити повідомлення')
+            .setStyle(ButtonStyle.Success)
+            .setCustomId('echo_' + uni)
+        )
+        
+        message.components = [row]
+        await interaction.editReply(message)
+        .catch(async err => { return await interaction.editReply({ embeds: [{ author: { name: 'Виникла помилка при формуванні повідомлення. Перевірте правильність данних.' }, color: 0xeb4c34 }], ephemeral: true, components: []}) })
+        message.components = []
+
+        const filter = i => i.customId === `echo_${uni}` && i.user.id === interaction.user.id; 
+        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000, max: 1 });
+
+        collector.on('collect', async (c) => {
+            if(options.getString('author') === 'server'){
                 const webhooks = await channel.fetchWebhooks();
                 let webhook = webhooks.find(wh => wh.name === `Kazak echo`);
                 if(!webhook) webhook = await channel.createWebhook({
@@ -96,22 +116,27 @@ module.exports = {
     
                 await webhook.send(message)
                 .then(async() => {
-                    await interaction.editReply({ content: `Повідомлення відправлено в ${channel}. Від імені серверу`, ephemeral: true })
+                    await interaction.editReply({ embeds: [{ author: { name: 'Повідомлення відправлено' }, color: 0x344feb, description: `Повідомлення було відправлено в канал ${channel} від імені Серверу.` }], ephemeral: true, components: [] })
                 })
                 .catch(async err => {
                     console.log(err)
-                    return await interaction.editReply({ content: `Виникла помилка`, ephemeral: true }) 
+                    return await interaction.editReply({ embeds: [{ author: { name: 'Виникла помилка' }, color: 0xeb4c34 }], ephemeral: true, components: []})
                 })
         }else{
                 await channel.send(message)
                 .then(async() => {
-                    await interaction.editReply({ content: `Повідомлення відправлено в ${channel}. Від імені бота.`, ephemeral: true })
+                    await interaction.editReply({ embeds: [{ author: { name: 'Повідомлення відправлено' }, color: 0x9f34eb, description: `Повідомлення було відправлено в канал ${channel} від імені Бота.` }], ephemeral: true, components: [] })
                 })
                 .catch(async err => {
                     console.log(err)
-                    return await interaction.editReply({ content: `Виникла помилка`, ephemeral: true })
+                    return await interaction.editReply({ embeds: [{ author: { name: 'Виникла помилка' }, color: 0xeb4c34 }], ephemeral: true, components: []})
                 })
         }
+        })
+
+        collector.on('end', async (collected) => {
+            if(!collected.first()) return await interaction.editReply({ embeds: [{ author: { name: 'Дія відмінена від неактивності' }, ephemeral: true }], components: [] })
+        })
 
     }
 }
