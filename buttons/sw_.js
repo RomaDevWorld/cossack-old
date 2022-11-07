@@ -7,12 +7,7 @@ module.exports = {
     id: "sw_",
     permission: [PermissionsBitField.Flags.ManageRoles],
     async execute(interaction){
-        const types = {
-            'sw_bans': ['banAdd', 'banRemove'],
-            'sw_msgs': ['msgUpdate', 'msgDelete'],
-            'sw_members': ['memAdd', 'memRemove', 'memUpdate'],
-            'sw_voices': ['voiceL', 'voiceJ', 'voiceM']
-        } //Types handler
+        const types = require('../switches_types.json') //Require types
 
         if(interaction.component.data.style === 3){
             //Turn off the switch

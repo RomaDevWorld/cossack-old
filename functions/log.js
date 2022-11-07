@@ -162,8 +162,8 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'memAdd') === false) return; //Does the same
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Участник зайшов`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
-        .setDescription(`${options.member} (${options.member.user.tag})`)
+        .setAuthor({ name: `Участник приєднався`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
+        .setDescription(`${options.member} (${options.member.user.tag})\nАккаунт створений: ${moment(options.member.user.createdAt).format('YYYY.DD.MM HH:mm')}`)
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Green')
         .setTimestamp()

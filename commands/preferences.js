@@ -155,12 +155,7 @@ module.exports = {
             }
             if(interaction.options.getSubcommand() === 'switch'){ //If subcommand name is 'swithc'
 
-                const types = {
-                    'sw_bans': ['banAdd', 'banRemove'],
-                    'sw_msgs': ['msgUpdate', 'msgDelete'],
-                    'sw_members': ['memAdd', 'memRemove', 'memUpdate'],
-                    'sw_voices': ['voiceL', 'voiceJ', 'voiceM']
-                } //Types handler
+                const types = require('../switches_types.json') //Types handler
                 
                 let sws = await logs.get(`${interaction.guild.id}.types`) //It's easier 
                 if(!sws) sws = []
@@ -171,25 +166,19 @@ module.exports = {
                 if(exist(sws, types['sw_msgs'])) msg.setStyle(ButtonStyle.Success) //Defines if type is on or off, sets a 'Success' style if on
                 else msg.setStyle(ButtonStyle.Danger) //Sets a 'Danger' style if off
 
-                const ban = new ButtonBuilder()
-                .setCustomId('sw_bans')
-                .setLabel('Блокування/Розблукування')
-                if(exist(sws, types['sw_bans'])) ban.setStyle(ButtonStyle.Success) //Defines if type is on or off, sets a 'Success' style if on
-                else ban.setStyle(ButtonStyle.Danger) //Sets a 'Danger' style if off
-
                 const mem = new ButtonBuilder()
                 .setCustomId('sw_members')
-                .setLabel('Зміна участника (Нікнейм/Роль)')
+                .setLabel('Участники')
                 if(exist(sws, types['sw_members'])) mem.setStyle(ButtonStyle.Success) //Does the same thing
                 else mem.setStyle(ButtonStyle.Danger)
 
                 const voi = new ButtonBuilder()
                 .setCustomId('sw_voices')
-                .setLabel('Голосові (Зайшов/Вийшов/Змінив)')
+                .setLabel('Голосові канали')
                 if(exist(sws, types['sw_voices'])) voi.setStyle(ButtonStyle.Success) //Does the same thing
                 else voi.setStyle(ButtonStyle.Danger)
 
-                const row = new ActionRowBuilder().addComponents([msg, ban, mem, voi]) //Creates an action row with all the buttons
+                const row = new ActionRowBuilder().addComponents([msg, mem, voi]) //Creates an action row with all the buttons
                 const log = await logs.get(`${interaction.guild.id}.channel`) //Gets a logs channel id from db
                 
                 const embed = new EmbedBuilder()
