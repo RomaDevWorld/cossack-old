@@ -13,7 +13,7 @@ module.exports = {
             .setColor('Green')
             await interaction.reply({ embeds: [embed], ephemeral: true })
         }catch(err){ //Returns an error message if error (Probably target user has no avatar)
-            console.log(err)
+            console.error(err)
             await interaction.reply({ embeds: [{ author: { name: 'Отакої! Виникла помилка, скоріше за все в участника не встановлений аватар' }, color: 0xcc2929 }], ephemeral: true })
         }
     }

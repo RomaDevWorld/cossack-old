@@ -10,7 +10,7 @@ module.exports = { //BUTTON'S INFORMATION
                 member.ban({ deleteMessageSeconds: 60 * 60, reason: `${interaction.user.tag}: Заблокувати участника та очитити повідомлення за 1 год.` })
                 await interaction.reply({ embeds: [{ author: { name: 'Участник був успішно заблокований а повідомлення за останню годину - видалені' }, color: 0x33a64e }], ephemeral: true })
             }catch(err){ //If error returns error message
-                console.log(err)
+                console.error(err)
                 await interaction.reply({ content: `Щось пішло не так. Спробуйте ще-раз піздніше або зверніться до адміністратора.`, ephemeral: true })
             }   
         }else{ //If coudn't find member - remove buttons and send a messsage

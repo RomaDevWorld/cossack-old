@@ -90,7 +90,7 @@ module.exports = {
                 { name: 'Загальна кількість', value: `${fdb.length+1}`, inline: true },
                 { name: 'Причина', value: `${reason.slice(0, 1000) || 'Причина не вказана'}` },
             )
-            channel.send({ embeds: [logEmbed] }).catch(err => console.log(err))
+            channel.send({ embeds: [logEmbed] }).catch(err => console.error(err))
 
         }else{
             await db.delete(`${interaction.guild.id}.${member.id}`)
@@ -112,7 +112,7 @@ module.exports = {
                 { name: 'Модератор', value: `${interaction.user}`, inline: true },
                 { name: 'Коментар', value: `${reason.slice(0, 1000) || 'Не вказано'}` },
             )
-            channel.send({ embeds: [logEmbed] }).catch(err => console.log(err))
+            channel.send({ embeds: [logEmbed] }).catch(err => console.error(err))
 
         }
     }

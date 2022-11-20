@@ -119,7 +119,7 @@ module.exports = {
                     await interaction.editReply({ embeds: [{ author: { name: 'Повідомлення відправлено' }, color: 0x344feb, description: `Повідомлення було відправлено в канал ${channel} від імені Серверу.` }], ephemeral: true, components: [] })
                 })
                 .catch(async err => {
-                    console.log(err)
+                    console.error(err)
                     return await interaction.editReply({ embeds: [{ author: { name: 'Виникла помилка' }, color: 0xeb4c34 }], ephemeral: true, components: []})
                 })
         }else{
@@ -128,7 +128,7 @@ module.exports = {
                     await interaction.editReply({ embeds: [{ author: { name: 'Повідомлення відправлено' }, color: 0x9f34eb, description: `Повідомлення було відправлено в канал ${channel} від імені Бота.` }], ephemeral: true, components: [] })
                 })
                 .catch(async err => {
-                    console.log(err)
+                    console.error(err)
                     return await interaction.editReply({ embeds: [{ author: { name: 'Виникла помилка' }, color: 0xeb4c34 }], ephemeral: true, components: []})
                 })
         }

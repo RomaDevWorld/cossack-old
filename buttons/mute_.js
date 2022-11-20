@@ -10,7 +10,7 @@ module.exports = { //BUTTON'S INFORMATION
                 member.timeout(60 * 1000 * 5, `${interaction.user.tag}: Заблокувати чат на 5 хвилин`)
                 await interaction.reply({ embeds: [{ author: { name: 'Чат участника був успішно заблокований' }, color: 0x33a64e }], ephemeral: true })
             }catch(err){ //Return error if error
-                console.log(err)
+                console.error(err)
                 await interaction.reply({ content: `Щось пішло не так. Спробуйте ще-раз піздніше або зверніться до адміністратора.`, ephemeral: true })
             }   
         }else{ //No member - return message and delete the buttons

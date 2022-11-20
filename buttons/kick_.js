@@ -10,7 +10,7 @@ module.exports = { //BUTTON'S INFORMATION
                 member.kick(`${interaction.user.tag}: Вигнати участника з серверу`)
                 await interaction.reply({ embeds: [{ author: { name: 'Участник був успішно вигнаний' }, color: 0x33a64e }], ephemeral: true })
             }catch(err){ //Returns an error if error 0_0
-                console.log(err)
+                console.error(err)
                 await interaction.reply({ content: `Щось пішло не так. Спробуйте ще-раз піздніше або зверніться до адміністратора.`, ephemeral: true })
             }   
         }else{ //If coudn't find a member - delete buttons and send a message
