@@ -1,8 +1,8 @@
-const { PermissionsBitField, EmbedBuilder, AttachmentBuilder } = require('discord.js')
+const { PermissionsBitField, EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 const { QuickDB } = require('quick.db')
 const db = new QuickDB().table('misc')
 const moment = require('moment')
-const { createWriteStream, unlinkSync } = require('fs')
+const { createWriteStream, unlink } = require('fs')
 
 module.exports = { //BUTTON'S INFORMATION
     id: "tick_",
@@ -29,6 +29,8 @@ module.exports = { //BUTTON'S INFORMATION
                     channel.permissionOverwrites.set([{ id: interaction.guild.id, deny: [PermissionsBitField.Flags.ViewChannel] }]);
                 }
 
+                interaction.message.edit({ components: [] })
+
                 const messages = await channel.messages.fetch()
                 const createdAt = messages.last().createdTimestamp
                 const script = messages.reverse().filter(m => !m.author.bot).map(m => `${m.author.tag}: ${m.content || `Системне повідомлення`}`).join('\n')
@@ -52,13 +54,24 @@ module.exports = { //BUTTON'S INFORMATION
                 )
                 .setFooter({ text: 'Цей канал буде видалено через 5 хвилин' })
 
-                await interaction.reply({ embeds: [embed] }).then(() => {
-                    if(script.length > 0) interaction.followUp({ content: 'Не забудьте зберегти транскрипцію!', files: [attachment] })
+                const row = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                    .setLabel('Видалити зараз')
+                    .setCustomId('delete')
+                    .setStyle(ButtonStyle.Danger)
+                )
+
+                await interaction.reply({ embeds: [embed], components: [row] }).then(async() => {
+                    if(script.length > 0) await interaction.followUp({ content: 'Не забудьте зберегти транскрипцію!', files: [attachment] })
+                })
+                
+                unlink(`${stream.path}`, (err) => {
+                    if(err) console.error(err)
                 })
 
                 setTimeout(() => {
                     channel.delete().catch(err => console.error(err))
-                    unlinkSync(stream.path)
                 }, 5 * 60000)
 
             }

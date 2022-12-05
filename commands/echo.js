@@ -82,7 +82,8 @@ module.exports = {
         if(embedImage && embedImage.contentType.startsWith('image')) embed.setImage(embedImage.url)
         if(embedThumbnail && embedThumbnail.contentType.startsWith('image')) embed.setThumbnail(embedThumbnail.url)
             
-        if(Object.keys(embed.data).length !== 0) message.embeds = [embed] || []
+        if(embed.data[0]) message.embeds = [embed]
+        else message.embeds = []
 
         let uni = Math.floor(Date.now() / 1000)
 
