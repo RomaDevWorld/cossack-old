@@ -24,7 +24,7 @@ module.exports = {
         allVotes++
 
         var num = 1
-        embed.description = vote.options.map((o, index) => `**${index+1}.** ${o.name} (${o.value.length / allVotes * 100}%)`).join(`\n`)  + `\n\nУсього голосів: ${allVotes}`
+        embed.description = vote.options.map((o, index) => `**${index+1}.** ${o.name} (${(o.value.length / allVotes * 100).toFixed(0)}%)`).join(`\n`)  + `\n\nУсього голосів: ${allVotes}`
 
         interaction.message.edit({ embeds: interaction.message.embeds })
 
