@@ -238,8 +238,8 @@ async function getlog(guild, bool) {
 }
 
 async function isOn(guild, type){
-    let type = await db.get(`${guild.id}.types`)
-    if(type && type.includes(type)){ //If db array has that type
+    let typedb = await db.get(`${guild.id}.types`)
+    if(typedb && typedb.includes(type)){ //If db array has that type
         return true
     }else{ //Nah
         return false
