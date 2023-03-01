@@ -5,7 +5,7 @@ const db = new QuickDB().table('votes')
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('vote')
-        .setDescription('Відображає затримку між хостингом і серверами Discord')
+        .setDescription('Створити голосування напряму в чаті')
         .addStringOption(option => option.setName('label').setDescription('Назва голосування').setRequired(true))
         .addStringOption(option => option.setName('option1').setDescription('Варіант 1').setRequired(true))
         .addStringOption(option => option.setName('option2').setDescription('Варіант 2').setRequired(true))

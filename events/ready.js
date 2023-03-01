@@ -9,7 +9,7 @@ module.exports = {
     execute (client, commands) {
         console.log(`${client.user.tag} is online.`)
 
-        client.user.setActivity('за кримським мостом.', { type: ActivityType.Watching }); //Client's activity
+        client.user.setActivity('tinyurl.com/cossac-invite', { type: ActivityType.Playing }); //Client's activity
 
         const CLIENT_ID = client.user.id 
         const rest = new REST({
