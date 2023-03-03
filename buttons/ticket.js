@@ -13,9 +13,11 @@ module.exports = { //BUTTON'S INFORMATION
         }
         if(cd.has(interaction.user.id)) return await interaction.reply({ content: 'Тікети можна створювати раз в 10 хвилин', ephemeral: true })
 
+        let chName = interaction.guild.channels.cache.filter(channel => channel.name.startsWith('ticket_')).size || 0
+
         try{
             let channel = await interaction.guild.channels.create({ //Creates a new channel
-                name: Math.round(Date.now() / 5000).toString(),
+                name: `ticket_${chName+1}`,
                 parent: interaction.guild.channels.cache.get(await db.get(`${interaction.guild.id}.ticket.category`)) || undefined, //If has perent set perent
                 permissionOverwrites: [
                     {

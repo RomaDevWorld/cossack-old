@@ -18,7 +18,8 @@ module.exports = async function (client) {
                     console.error(err) //Throw error if error
                 }
         }else{
-            await database.remove(database[i].id) //If guild or channel wasn't found - delete value from db
+            const raw = await db.table(`counters`)
+            await raw.delete(database[i].id) //If guild or channel wasn't found - delete value from db
         }
     }
 };

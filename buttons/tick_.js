@@ -2,7 +2,7 @@ const { PermissionsBitField, EmbedBuilder, AttachmentBuilder, ActionRowBuilder, 
 const { QuickDB } = require('quick.db')
 const db = new QuickDB().table('misc')
 const moment = require('moment')
-const { createWriteStream, unlink } = require('fs')
+const { createWriteStream, unlink, existsSync, mkdirSync } = require('fs')
 
 module.exports = { //BUTTON'S INFORMATION
     id: "tick_",
@@ -35,7 +35,11 @@ module.exports = { //BUTTON'S INFORMATION
                 const createdAt = messages.last().createdTimestamp
                 const script = messages.reverse().filter(m => !m.author.bot).map(m => `${m.author.tag}: ${m.content || `Системне повідомлення`}`).join('\n')
 
-                const stream = await createWriteStream(`./cache/${channel.name}.log`);
+                const dir = './cache'
+                if(!existsSync(dir)){
+                    mkdirSync(dir)
+                }
+                const stream = await createWriteStream(`${dir}/${channel.name}.log`);
                 if(script.length > 0){
                     stream.write(`[Обговорення розпочато ${moment(createdAt).format(`DD.MM.YYYY HH:mm`)}]\n`)
                     stream.write(script)
