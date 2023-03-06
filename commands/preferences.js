@@ -54,6 +54,23 @@ module.exports = {
                 .setName(`remove`)
                 .setDescription(`Видалити лічильник`)    
             )
+        )
+        .addSubcommandGroup(group => 
+            group
+            .setName(`roles`)
+            .setDescription("Авто-роль при заході та відновлення ролей при перезаході")
+            .addSubcommand(subcommand => 
+                subcommand
+                .setName(`autorole`)
+                .setDescription(`Увімкнути/Вимкнути автоматичну видачу вказаної ролі при приєднанні нового участника`)    
+                .addRoleOption(option => option.setName(`role`).setDescription(`Роль, що буде видана при приєнані нового участника`))
+            )
+            .addSubcommand(subcommand => 
+                subcommand
+                .setName(`restore`)
+                .setDescription(`Відновлювати ролі та нікнейм при пере-під'єнанні участника`)
+                .addBooleanOption(option => option.setName('bool').setDescription("Увімкнути або Вимкнути функцію").setRequired(true))
+            )
         ),
     async execute(interaction) {
         if(!interaction.options.getSubcommandGroup()){ //If interaction has no command group
@@ -190,6 +207,37 @@ module.exports = {
                 .setFooter({ text: `Натискання на кнопку увімкне або вимкне тип події` })
                 .setColor(`White`)
                 await interaction.reply({ embeds: [embed], components: [row], ephemeral: true }) //Sends an embed with all the buttons
+            }
+        }
+
+        if(interaction.options.getSubcommandGroup() === `roles`){
+            const rolemng = db.table('rolemng')
+
+            if(interaction.options.getSubcommand() === 'autorole'){
+                const role = interaction.options.getRole('role')
+                if(!role){
+                    await rolemng.delete(`${interaction.guild.id}.autorole`)
+                    return await interaction.reply({ embeds: [{ description: `**Ми не будемо видавати ролі при заході на сервер**` , color: 0x33a64e }], ephemeral: true })
+                }
+
+                if(role.position > interaction.member.roles.highest.position) return await interaction.reply({ embeds: [{ description: `**Ви не можете встановити роль, яку не можете собі видати**` , color: 0xcc2929 }], ephemeral: true })
+
+                rolemng.set(`${interaction.guild.id}.autorole`, role.id)
+
+                return await interaction.reply({ embeds: [{ description: `**Ми будемо видавати роль ${role} участникам що зайдуть на сервер**` , color: 0x33a64e }], ephemeral: true })
+
+            }else{
+
+                const bool = interaction.options.getBoolean('bool')
+
+                if(bool){
+                    rolemng.set(`${interaction.guild.id}.restore`, true)
+                    return await interaction.reply({ embeds: [{ author: { name: 'Тепер ми будемо відновлювати усі ролі та нікнейм участника що перезайшов' }, color: 0x33a64e }], ephemeral: true })
+                }else{
+                    rolemng.delete(`${interaction.guild.id}.restore`)
+                    return await interaction.reply({ embeds: [{ author: { name: 'Ми більше не будем відновлювати ролі та нікнейми участників що перезайшли' }, color: 0x33a64e }], ephemeral: true })
+                }
+
             }
         }
 
