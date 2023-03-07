@@ -81,8 +81,8 @@ module.exports = {
         }
         if(embedImage && embedImage.contentType.startsWith('image')) embed.setImage(embedImage.url)
         if(embedThumbnail && embedThumbnail.contentType.startsWith('image')) embed.setThumbnail(embedThumbnail.url)
-            
-        if(embed.data[0]) message.embeds = [embed]
+
+        if(Object.keys(embed.data).length !== 0) message.embeds = [embed]
         else message.embeds = []
 
         let uni = Math.floor(Date.now() / 1000)
@@ -94,7 +94,7 @@ module.exports = {
             .setStyle(ButtonStyle.Success)
             .setCustomId('echo_' + uni)
         )
-        
+
         message.components = [row]
         await interaction.editReply(message)
         .catch(async err => { return await interaction.editReply({ embeds: [{ author: { name: 'Виникла помилка при формуванні повідомлення. Перевірте правильність данних.' }, color: 0xeb4c34 }], ephemeral: true, components: []}) })
