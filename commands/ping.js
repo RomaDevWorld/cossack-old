@@ -1,13 +1,23 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
-        .setDescription('Відображає затримку між хостингом і серверами Discord'),
+        .setDescription('Відображає затримку між хостингом і серверами Discord. Додатково відображає статистику'),
     async execute(interaction) {
-        let resDate = new Date().getTime() //Saves the time before interaction
-        await interaction.reply({content: `Рахуємо..`, ephemeral: true}).then(async(msg) => { //Sends the message then edits it.
-            await interaction.editReply(`**Затримка Discord:** ${interaction.client.ws.ping}мс.\n**Затримака програми:** ${new Date().getTime() - resDate}мс.`) //Substract a time before interaction from current time
-        })
+        const stats = {
+            guilds: interaction.client.guilds.cache.size,
+            channels: interaction.client.channels.cache.size,
+            users: interaction.client.users.cache.size
+        }
+
+        const embed = new EmbedBuilder()
+        .addFields(
+            { name: 'Затримка між Discord:', value: interaction.client.ws.ping.toString() },
+            { name: 'Статистика:', value: `**Сервери:** ${stats.guilds}\n**Канали:** ${stats.channels}\n**Користувачі:** ${stats.users}` }
+        )
+        .setColor('Yellow')
+
+        await interaction.reply({ embeds: [embed], ephemeral: true })
     }
 }
