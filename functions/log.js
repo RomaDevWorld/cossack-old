@@ -11,7 +11,7 @@ module.exports = async function (type, client, options) {
         channel = await getlog(options.message.guild, true) //Finds a log channel from db
         if(!channel || await isOn(channel.guild, 'msgDelete') === false || options.message.author.bot) return; //If channel wasn't found or switcher is off, or user is bot - return
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Повідомлення видалено | ${options.message.member.nickname}`, iconURL: options.message.member.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Повідомлення видалено | ${options.message.member?.nickname || options.message.author.username}`, iconURL: options.message.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`[Перейти до повідомлення](${options.message.url})\n**Контент повідомлення:**\n` + options.message.content || `?` + `\n${options.message.attachments.map(i => i.url).join(`\n`)}`)
         .addFields(
             { name: 'Автор', value: `${options.message.author} (${options.message.author.tag})`, inline: true },
@@ -28,7 +28,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'msgUpdate') === false || options.newMessage.author.bot) return; //Does the same thing every time
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Повідомлення відредаговано | ${options.newMessage.member.nickname}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Повідомлення відредаговано | ${options.message.member?.nickname || options.message.author.username}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`[Перейти до повідомлення](${options.newMessage.url})`)
         .addFields(
             { name: 'Автор', value: `${options.newMessage.author} (${options.newMessage.author.tag})`, inline: true },

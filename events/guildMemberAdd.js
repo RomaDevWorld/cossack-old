@@ -6,6 +6,8 @@ module.exports = {
     name: 'guildMemberAdd',
     once: false,
     async execute (member, client) {
+        if(member.bot) return;
+
         await log('memAdd', client, { member }) //Execute the function
 
         const autorole = db.table('rolemng')

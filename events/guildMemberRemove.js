@@ -6,6 +6,8 @@ module.exports = {
     name: 'guildMemberRemove',
     once: false,
     async execute (member, client) {
+        if(member.bot) return;
+
         await log('memRemove', client, { member }) //Execute the function
 
         const prefdb = db.table('rolemng')
