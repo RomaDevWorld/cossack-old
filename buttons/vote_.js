@@ -5,8 +5,14 @@ module.exports = {
     id: "vote_",
     async execute(interaction){
         let embed = interaction.message.embeds[0].data
+        if(!embed){
+            console.error('Embed does not exist on vote')
+            interaction.message.delete()
+            return await interaction.reply({ content: 'З цим голосування щось не так, спробуйте перестворити його', ephemeral: true })
+        }
         let vote = await db.get(embed.footer.text)
         if(!vote){
+            console.error('Vote does not exist')
             interaction.message.delete()
             return await interaction.reply({ content: 'Цього голосування більше не їснує', ephemeral: true })
         }

@@ -20,7 +20,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `USID: ${options.message.author.id}` })
         .setColor('Red')
         .setTimestamp()
-        await channel.send({ embeds: [embed] }) //Creates an embed and send's it to the log channel
+        await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creates an embed and send's it to the log channel
     }
     //messageUpdate
     else if(type === 'msgUpdate'){
@@ -28,7 +28,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'msgUpdate') === false || options.newMessage.author.bot) return; //Does the same thing every time
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Повідомлення відредаговано | ${options.message.member?.nickname || options.message.author.username}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Повідомлення відредаговано | ${options.newMessage.member.nickname || options.message.author.username}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`[Перейти до повідомлення](${options.newMessage.url})`)
         .addFields(
             { name: 'Автор', value: `${options.newMessage.author} (${options.newMessage.author.tag})`, inline: true },
@@ -40,7 +40,7 @@ module.exports = async function (type, client, options) {
         .setColor('Blue')
         .setTimestamp()
         
-        await channel.send({ embeds: [embed] })
+        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
     }
     //guildMemberUpdate
     else if(type === 'memUpdate'){
@@ -87,12 +87,12 @@ module.exports = async function (type, client, options) {
             embed.addFields({ name: `Додані ролі:`, value: adRole.join(`\n`) }) //Add a field with the new roles
         }
         if(embed.data.fields){
-            let log = await channel.send({ embeds: [embed] }) //If at least one of the fields was added - send embed to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //If at least one of the fields was added - send embed to the log
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
 
             embed.addFields({ name: 'Модератор', value: `${audit.executor}` })
-            log.edit({ embeds: [embed] })
+            log.edit({ embeds: [embed] }).catch(err => console.error(err))
         } 
 
         if(options.oldMember.communicationDisabledUntil && !options.newMember.communicationDisabledUntil){
@@ -142,7 +142,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Orange')
         .setTimestamp()
-        let log = await channel.send({ embeds: [embed] })
+        let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err))
 
         const audit = await fetchLog(channel.guild, AuditLogEvent.MemberKick)
         if(!audit || audit.target.id !== options.member.id) return;
@@ -167,7 +167,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Green')
         .setTimestamp()
-        await channel.send({ embeds: [embed] })
+        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
     }
     //guildBanAdd
     else if(type === 'banAdd'){

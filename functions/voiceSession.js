@@ -21,7 +21,7 @@ module.exports = async function(id, log, type, msg) {
             console.log(sessions)
             return console.error(`Coudn't find ${id} session. Left.`)
         }
-        let message = await log.messages.fetch(sessions[`${log.guild.id}_${id}`].message)
+        let message = await log.messages.fetch(sessions[`${log.guild.id}_${id}`].message).catch(err => console.error(err))
         if(message) return { message: message, time: sessions[`${log.guild.id}_${id}`].joined }
         delete sessions[`${log.guild.id}_${id}`]
     }
