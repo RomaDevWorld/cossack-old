@@ -1,5 +1,7 @@
 const { QuickDB } = require('quick.db')
 const db = new QuickDB().table('votes')
+const voteCd = new Set()
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
     id: "vote_",
@@ -17,10 +19,15 @@ module.exports = {
             return await interaction.reply({ content: 'Цього голосування більше не їснує', ephemeral: true })
         }
 
+        if(voteCd.has(interaction.user.id)) await wait(1500)
+
         var allVotes = 0
         for (let i in vote.options){
-            if(vote.options[i].value.includes(interaction.user.id)) return await interaction.reply({ content: 'Ви вже проголосували', ephemeral: true })
-            allVotes = allVotes + vote.options[i].value.length
+            if(vote.options[i].value.includes(interaction.user.id)){
+                vote.options[i].value = vote.options[i].value.filter(value => value !== interaction.user.id)
+            }else{
+                allVotes = allVotes + vote.options[i].value.length
+            }
         }
 
         let selected = (interaction.customId.split('_')[1] - 1)
@@ -35,5 +42,10 @@ module.exports = {
         interaction.message.edit({ embeds: interaction.message.embeds })
 
         await interaction.reply({ content: 'Ваш голос зараховано', ephemeral: true })
+
+        voteCd.add(interaction.user.id);
+        setTimeout(() => {
+            voteCd.delete(interaction.user.id)
+        }, 1500)
     }
 }
