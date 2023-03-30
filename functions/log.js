@@ -28,7 +28,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'msgUpdate') === false || options.newMessage.author.bot) return; //Does the same thing every time
 
         let embed = new EmbedBuilder()
-        .setAuthor({ name: `Повідомлення відредаговано | ${options.newMessage.member.nickname || options.message.author.username}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })
+        .setAuthor({ name: `Повідомлення відредаговано | ${options.newMessage.member.nickname || options.newMessage.author.username}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`[Перейти до повідомлення](${options.newMessage.url})`)
         .addFields(
             { name: 'Автор', value: `${options.newMessage.author} (${options.newMessage.author.tag})`, inline: true },
@@ -250,6 +250,9 @@ async function fetchLog(guild, type){
     const fetchedLogs = await guild.fetchAuditLogs({
 		limit: 1,
 		type: type,
-	});
+	}).catch(err => {
+        console.error(err)
+        return;
+    })
     return fetchedLogs.entries.first();
 }

@@ -2,7 +2,7 @@ module.exports = {
     name: 'messageReactionAdd',
     once: false,
     async execute (messageReaction, user, client) {
-        if(messageReaction._emoji.name === "🇷🇺"){
+        if(messageReaction && messageReaction._emoji.name === "🇷🇺"){
             try{
                 const guild = await client.guilds.fetch(messageReaction.message.guildId)
                 const member = await guild.members.cache.get(user.id)
