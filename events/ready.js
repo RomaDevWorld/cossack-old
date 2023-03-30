@@ -19,10 +19,10 @@ module.exports = {
             if(1 > 2){ //Change it to (1 < 2) to delete all the slash commands
                 try{
                     rest.put(Routes.applicationGuildCommands(CLIENT_ID, process.env.GUILD_ID), { body: [] })
-                    .then(() => console.log('All commands was deleted [GLOBAL]'))
+                    .then(() => console.log('All commands were deleted [GLOBAL]'))
                 
                     rest.put(Routes.applicationCommands(CLIENT_ID), { body: [] })
-                    .then(() => console.log('All commands was deleted [LOCAL]'))
+                    .then(() => console.log('All commands were deleted [LOCAL]'))
                 }catch (err) {
                     if(err) console.error(err)
                 }
@@ -32,12 +32,12 @@ module.exports = {
                         await rest.put(Routes.applicationCommands(CLIENT_ID), {
                             body: commands
                         });
-                        console.log("All commands was loaded [GLOBAL]")
+                        console.log("All commands were loaded [GLOBAL]")
                     } else {
                         await rest.put(Routes.applicationCommands(CLIENT_ID, process.env.GUILD_ID), {
                             body: commands
                         });
-                        console.log("All commands was loaded [LOCAL]")
+                        console.log("All commands were loaded [LOCAL]")
                     }
                 } catch (err) {
                     if(err) console.error(err)

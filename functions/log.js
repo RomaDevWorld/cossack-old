@@ -12,7 +12,7 @@ module.exports = async function (type, client, options) {
         if(!channel || await isOn(channel.guild, 'msgDelete') === false || options.message.author.bot) return; //If channel wasn't found or switcher is off, or user is bot - return
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Повідомлення видалено | ${options.message.member?.nickname || options.message.author.username}`, iconURL: options.message.member.displayAvatarURL({ dynamic: true }) })
-        .setDescription(`[Перейти до повідомлення](${options.message.url})\n**Контент повідомлення:**\n` + options.message.content || `?` + `\n${options.message.attachments.map(i => i.url).join(`\n`)}`)
+        .setDescription(`[Перейти до повідомлення](${options.message.url})\n**Контент повідомлення:**\n` + (options.message.content || `?`))
         .addFields(
             { name: 'Автор', value: `${options.message.author} (${options.message.author.tag})`, inline: true },
             { name: 'Канал', value: `${options.message.channel} (#${options.message.channel.name})`, inline: true }
@@ -20,6 +20,9 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `USID: ${options.message.author.id}` })
         .setColor('Red')
         .setTimestamp()
+        if(options.message.attachments.first()){
+            embed.addFields({ name: 'Вкладені файли', value: `${options.message.attachments.map(a => a.url).join(`\n`)}` })
+        }
         await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creates an embed and send's it to the log channel
     }
     //messageUpdate
@@ -33,12 +36,15 @@ module.exports = async function (type, client, options) {
         .addFields(
             { name: 'Автор', value: `${options.newMessage.author} (${options.newMessage.author.tag})`, inline: true },
             { name: 'Канал', value: `${options.newMessage.channel} (#${options.newMessage.channel.name})`, inline: true },
-            { name: 'Раніше:', value: `${options.oldMessage.content || `?`}\n${`${options.oldMessage.attachments.map(i => i.url).join(`\n`)}` || ``}` },
-            { name: 'Зараз:', value: `${options.newMessage.content || `?`}\n${`${options.newMessage.attachments.map(i => i.url).join(`\n`)}` || ``}` }
+            { name: 'Раніше:', value: `${options.oldMessage.content || `?`}` },
+            { name: 'Зараз:', value: `${options.newMessage.content || `?`}` }
         )
         .setFooter({ text: `USID: ${options.newMessage.author.id}` })
         .setColor('Blue')
         .setTimestamp()
+        if(options.newMessage.attachments.first() || options.oldMessage.attachments.first()){
+            embed.addFields({ name: 'Вкладені файли', value: `**Раніше:**\n${options.oldMessage.attachments.map(i => i.url).join(`\n`)}\n\n**Зараз:**\n${options.newMessage.attachments.map(i => i.url).join(`\n`)}`})
+        }
         
         await channel.send({ embeds: [embed] }).catch(err => console.error(err))
     }
