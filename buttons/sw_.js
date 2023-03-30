@@ -15,7 +15,13 @@ module.exports = {
             interaction.component.data.style = 4 //Change button style to DANGER
         }else{
             //Turn on the switch
-            if(!exist(await db.get(`${interaction.guild.id}.types`) || [], types[interaction.customId])) await db.push(`${interaction.guild.id}.types`, types[interaction.customId])
+            const array = await db.get(`${interaction.guild.id}.types`) || []
+            if(!exist(array, types[interaction.customId])){
+                types[interaction.customId].forEach(type => {
+                    array.push(type)
+                });
+                await db.set(`${interaction.guild.id}.types`, array)
+            }
             //If database has none of specified types - add a types to database
             interaction.component.data.style = 3 //Change button style to SUCCESS
         }
