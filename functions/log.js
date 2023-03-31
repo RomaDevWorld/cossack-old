@@ -51,7 +51,7 @@ module.exports = async function (type, client, options) {
     //guildMemberUpdate
     else if(type === 'memUpdate'){
         channel = await getlog(options.newMember.guild, true)
-        if(!channel || await isOn(channel.guild, 'memUpdate') === false) return;
+        if(!channel || options.newMember.user.bot || await isOn(channel.guild, 'memUpdate') === false) return;
 
         if(options.oldMember.nickname !== options.newMember.nickname){ //If old nickname and new nickname's are not the same
             let embed = new EmbedBuilder()
@@ -140,7 +140,7 @@ module.exports = async function (type, client, options) {
     }
     else if(type === 'memRemove'){
         channel = await getlog(options.member.guild, true)
-        if(!channel || await isOn(channel.guild, 'memRemove') === false) return; //Does the same
+        if(!channel || options.member.user.bot || await isOn(channel.guild, 'memRemove') === false) return; //Does the same
 
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Участник вийшов | ${options.member.nickname}`, iconURL: options.member.displayAvatarURL({ dynamic: true }) })
@@ -237,6 +237,7 @@ module.exports = async function (type, client, options) {
 };
 
 async function getlog(guild, bool) {
+    if(!guild) return;
     if(bool === true){ //For some reason i've added a boolean?
         return guild.channels.cache.get(await db.get(`${guild.id}.channel`)) //Returns a channel, that have been found from db(or not)
     } 
@@ -244,6 +245,7 @@ async function getlog(guild, bool) {
 }
 
 async function isOn(guild, type){
+    if(!guild) return;
     let typedb = await db.get(`${guild.id}.types`)
     if(typedb && typedb.includes(type)){ //If db array has that type
         return true
