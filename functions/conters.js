@@ -8,11 +8,18 @@ module.exports = async function (client) {
         let channel = await guild.channels.cache.get(database[i].value.id) //Gets a channel from value
         if(guild && channel){
                 try{
+                    const online = await getOnline(guild)
+                    const members = await getMembers(guild)
                     let name = database[i].value.name //Defines a name
-                        .replace(`ON`, await getOnline(guild)) //Replaces "ON" with filtered members that is offline, and a bots
-                        .replace(`ALL`, await getMembers(guild)) //Replaces 'ALL' with filtered members that is bots
-                        .replace('BOT', await getBots(guild))
-                        .replace('VC', await getVoices(guild))
+                        .replaceAll(`ON`, online)
+                        .replaceAll(`(ОНЛАЙН)`, online)
+                        .replaceAll(`[ОНЛАЙН]`, online) //Replaces "ON" with filtered members that are offline, and a bots
+                        .replaceAll(`MEM`, members)
+                        .replaceAll(`(УЧАСТНИКИ)`, members)
+                        .replaceAll(`[УЧАСТНИКИ]`, members)
+                        .replaceAll(`ALL`, members) //Replaces 'ALL' with filtered members that are bots
+                        .replaceAll('BOT', await getBots(guild))
+                        .replaceAll('VC', await getVoices(guild))
                      if(channel.name !== name) channel.setName(name) //If previous channel's name doesn't equal new name - change name
                 }catch(err){
                     console.error(err) //Throw error if error
@@ -38,5 +45,5 @@ async function getBots(guild) {
 }
 async function getVoices(guild) {
     let members = await guild.members.fetch()
-    return members.filter(mem => mem.voice.channel).size
+    return members.filter(mem => mem.voice.channel && !mem.user.bot).size
 }

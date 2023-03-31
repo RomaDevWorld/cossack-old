@@ -152,7 +152,11 @@ module.exports = {
                     {
                         name: `Назва`,
                         value: `\`${interaction.options.getString(`name`) || `Участники: ON/ALL`}\``
-                    }
+                    },
+                    {
+                        name: `Потрібна допомога?`,
+                        value: `[Текстова інструкція](https://github.com/RomaDevWorld/RomaDevWorld/blob/master/cossac/counters-guide-assets/counters-guide.md) / [Сервер підтримки](https://discord.gg/meNVABVA8c)`
+                    },
                 )
                 .setFooter({ text: `Лічильник оновлюється кожні 5 хвилин (Обмеження API)` })
                 await interaction.reply({ embeds: [embed], ephemeral: true }) //Creates an embed and sends it
