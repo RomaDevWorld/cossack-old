@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, SelectMenuBuilder, EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder } = require('discord.js')
 const { QuickDB } = require('quick.db')
 const db = new QuickDB().table('misc')
 
@@ -20,7 +20,7 @@ module.exports = {
 
         if(!roles[0]) return await interaction.reply({ content: `На сервері відсутні ролі, назва яких починається з \`${prefix}\``, ephemeral: true })
 
-        let list = new SelectMenuBuilder()
+        let list = new StringSelectMenuBuilder()
         .setCustomId('roles')
         .setPlaceholder('Виберіть роль')
         .setMinValues(0)

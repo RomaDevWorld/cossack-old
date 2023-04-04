@@ -262,5 +262,6 @@ async function fetchLog(guild, type){
         console.error(err)
         return;
     })
-    return fetchedLogs.entries.first();
+    if(!fetchedLogs || !fetchLog.entries) return;
+    return fetchedLogs.entries.first()
 }

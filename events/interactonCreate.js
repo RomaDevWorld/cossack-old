@@ -60,7 +60,7 @@ module.exports = {
                 if(!interaction.member.permissions.has(permissionBit)) return await interaction.reply({ embeds: [{ author: { name: 'Недостатньо прав!' }, color: 0xcc7229 }], ephemeral: true }) //Return if user doesn't have specified permissions
             }
             await button.execute(interaction) //Execute button
-        }else if(interaction.isSelectMenu()){
+        }else if(interaction.isStringSelectMenu()){
             if (interaction.customId === 'roles') {
                 let prefix = await db.table('misc').get(`${interaction.guild.id}.prefix`)
                 let max = await db.table('misc').get(`${interaction.guild.id}.maximum`)
@@ -79,18 +79,28 @@ module.exports = {
                     return interaction.message.edit({ components: [interaction.message.components[0]] })
                 }
 
+                if(!interaction.member.manageable) return await interaction.reply({ content: 'В мене недостатньо прав щоб редагувати Ваші ролі', ephemeral: true })
+
                 for(let i in list){
                     let role = interaction.guild.roles.cache.get(list[i].value)
                     if(!role || !role.name.startsWith(prefix)) return await interaction.reply({ content: 'Помилка. Спробуйте вивести список щераз', ephemeral: true })
                     if(interaction.values.includes(list[i].value)){
                         //Add role
                         if(!interaction.member.roles.cache.has(role.id)){
+                            if(!role.editable){
+                                text += `Не вдалось додати: ${role}\n`
+                                continue;
+                            }
                             interaction.member.roles.add((list[i].value))
                             text += `Добавлено: ${role}\n`
                         }
                     }else{
                         //Remove role
                         if(interaction.member.roles.cache.has(role.id)){
+                            if(!role.editable){
+                                text += `Не вдалось видалити: ${role}\n`
+                                continue;
+                            }
                             interaction.member.roles.remove((list[i].value))
                             text += `Вилучено: ${role}\n`
                         }

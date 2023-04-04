@@ -5,7 +5,6 @@ module.exports = async function (client) {
     const database = await db.table(`counters`).all() //Requires a table from db called 'counters'
     for (let i in database){ //Loops throught every value at db
         let guild = await client.guilds.cache.get(database[i].id) //Gets a guild from value
-        console.log(guild)
         if(!guild){
             console.error(`Remove ${database[i].id} from DB, because I cant see it.`)
             const raw = await db.table(`counters`)
