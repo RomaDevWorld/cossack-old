@@ -8,12 +8,18 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply()
 
-        let data = await fetch('https://aws.random.cat/meow').then(responce => responce.json())
+        const responce = await fetch('https://api.thecatapi.com/v1/images/search')
+        if(!responce.ok){
+            console.error(`Cound't fetch image`)
+            console.error(responce)
+            return await interaction.editReply('Не вдалося отримати зображення від API')
+        }
+        let json = await responce.json()
         let embed = new EmbedBuilder()
         .setAuthor({ name: 'Випадкова киця!' })
         .setColor('Orange')
-        .setImage(data.file)
-        .setFooter({ text: 'Зображення взято з сайту "aws.random.cat". Ми не відповідаємо за зміст.' })
+        .setImage(json[0].url)
+        .setFooter({ text: 'Зображення взято з сайту "thecatapi.com". Ми не відповідаємо за зміст.' })
         await interaction.editReply({ embeds: [embed] })
     }
 }

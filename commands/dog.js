@@ -8,11 +8,17 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply()
 
-        let data = await fetch('https://dog.ceo/api/breeds/image/random').then(responce => responce.json())
+        const responce = await fetch('https://dog.ceo/api/breeds/image/random')
+        if(!responce.ok){
+            console.error(`Cound't fetch image`)
+            console.error(responce)
+            return await interaction.editReply('Не вдалося отримати зображення від API')
+        }
+        let json = await responce.json()
         let embed = new EmbedBuilder()
         .setAuthor({ name: 'Випадкова собачка!' })
         .setColor('Grey')
-        .setImage(data.message)
+        .setImage(json.message)
         .setFooter({ text: 'Зображення взято з сайту "dog.ceo". Ми не відповідаємо за зміст.' })
         await interaction.editReply({ embeds: [embed] })
     }
