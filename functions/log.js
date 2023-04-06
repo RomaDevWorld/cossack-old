@@ -64,7 +64,7 @@ module.exports = async function (type, client, options) {
             .setFooter({ text: `USID: ${options.newMember.id}` })
             .setColor('Blue')
             .setTimestamp()
-            let log = await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creare an embed then send it to the log
 
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
@@ -110,7 +110,7 @@ module.exports = async function (type, client, options) {
             .addFields({
                 name: 'Участник', value: `${options.newMember}`
             })
-            let log = await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creare an embed then send it to the log
 
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
@@ -129,7 +129,7 @@ module.exports = async function (type, client, options) {
                 name: 'Участник', value: `${options.newMember}`,
                 name: "Час блокування", value: `${moment(time).fromNow()} (${moment(time).format('L')})`
             })
-            let log = await channel.send({ embeds: [embed] }) //Creare an embed then send it to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creare an embed then send it to the log
 
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
@@ -188,7 +188,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.user.id}` })
         .setColor('Red')
         .setTimestamp()
-        await channel.send({ embeds: [embed] })
+        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
     }
     //guildBanRemove
     else if(type === 'banRemove'){
@@ -203,7 +203,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.user.id}` })
         .setColor('Yellow')
         .setTimestamp()
-        await channel.send({ embeds: [embed] })
+        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
     }
     else if(type === 'voiceJ'){
         channel = await getlog(options.newVoiceState.guild, true)
@@ -213,7 +213,7 @@ module.exports = async function (type, client, options) {
         .setAuthor({ name: `${options.newVoiceState.member.user.tag}`, iconURL: options.newVoiceState.member.user.displayAvatarURL({ dynamic: true }) })
         .setDescription(`**Приєднався до ${options.newVoiceState.channel}**`)
         .setFooter({ text: `USID: ${options.newVoiceState.id}` })
-        let msg = await channel.send({ embeds: [embed] })
+        let msg = await channel.send({ embeds: [embed] }).catch(err => console.error(err))
         require(`./voiceSession.js`)(options.newVoiceState.id, channel, 0, msg)
     }
     else if(type === 'voiceL'){
