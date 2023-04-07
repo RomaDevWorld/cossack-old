@@ -32,7 +32,7 @@ module.exports = {
         const embed = new EmbedBuilder()
         .setAuthor({ name: 'Список ролей!' })
         .setColor('Gold')
-        .setDescription('Виберіть одну або декілька ролей щоб додати видати їх собі\nЗніміть виділення щоб вилучити')
+        .setDescription('Виберіть одну або декілька ролей щоб додати їх собі\nЗніміть виділення щоб вилучити')
 
         await interaction.reply({ embeds: [embed], components: [row] })
     }

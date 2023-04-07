@@ -1,12 +1,8 @@
 require(`dotenv`).config()
 const { 
-    EmbedBuilder, 
-    ActionRowBuilder, 
-    ButtonBuilder, 
-    ButtonStyle, 
-    PermissionsBitField, 
-    TextInputStyle,
-    RPCCloseEventCodes} = require('discord.js');
+    EmbedBuilder,
+    PermissionsBitField,
+    PermissionFlagsBits } = require('discord.js');
 
 const cd = new Set(); //New set for the cooldowns
 const cdTime = 5000; //If you want to, you can change the cooldown time (miliseconds)
@@ -79,7 +75,11 @@ module.exports = {
                     return interaction.message.edit({ components: [interaction.message.components[0]] })
                 }
 
-                if(!interaction.member.manageable) return await interaction.reply({ content: 'В мене недостатньо прав щоб редагувати Ваші ролі', ephemeral: true })
+                //if(!interaction.member.manageable) return await interaction.reply({ content: 'В мене недостатньо прав щоб редагувати Ваші ролі', ephemeral: true })
+                //So I thought that 'manageable' means that it shows whenever bot can edit user's roles. (?)
+                //I'll remove it and see how it'll perform
+
+                if(!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles)) return await interaction.reply({ content: 'Я не маю відповідних прав на виконання цієї дії', ephemeral: true })
 
                 for(let i in list){
                     let role = interaction.guild.roles.cache.get(list[i].value)
