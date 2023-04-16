@@ -10,6 +10,8 @@ module.exports = async function (type, client, options) {
     if(type === 'msgDelete'){
         channel = await getlog(options.message.guild, true) //Finds a log channel from db
         if(!channel || await isOn(channel.guild, 'msgDelete') === false || options.message.author.bot) return; //If channel wasn't found or switcher is off, or user is bot - return
+        if(!options.message.member) return console.error(options.message) //I have no idea why this error occurs, but it does. (This line was suggested by CodeWhisperer)
+
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Повідомлення видалено | ${options.message.member?.nickname || options.message.author.username}`, iconURL: options.message.member.displayAvatarURL({ dynamic: true }) })
         .setDescription(`[Перейти до повідомлення](${options.message.url})\n**Контент повідомлення:**\n` + (options.message.content || `?`))
@@ -29,6 +31,7 @@ module.exports = async function (type, client, options) {
     else if(type === 'msgUpdate'){
         channel = await getlog(options.newMessage.guild, true)
         if(!channel || await isOn(channel.guild, 'msgUpdate') === false || options.newMessage.author.bot) return; //Does the same thing every time
+        if(!options.newMessage.member) return console.error(options.newMessage)
 
         let embed = new EmbedBuilder()
         .setAuthor({ name: `Повідомлення відредаговано | ${options.newMessage.member.nickname || options.newMessage.author.username}`, iconURL: options.newMessage.member.displayAvatarURL({ dynamic: true }) })

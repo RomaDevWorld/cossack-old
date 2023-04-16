@@ -30,5 +30,8 @@
   "bugs": {
     "url": "https://github.com/RomaDevWorld/cossac/issues"
   },
-  "homepage": "https://github.com/RomaDevWorld/cossac#readme"
+  "homepage": "https://github.com/RomaDevWorld/cossac#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
 }
