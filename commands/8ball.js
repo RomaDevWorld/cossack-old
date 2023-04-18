@@ -16,7 +16,7 @@ module.exports = {
         .setAuthor({ name: 'Магічний шар каже..', iconURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/8-Ball_Pool.svg/1024px-8-Ball_Pool.svg.png' })
         .setDescription(`**Запитання:** "${interaction.options.getString('question')}"\n\n` + random(2))
         .setColor('DarkButNotBlack')
-        .setFooter({ text: 'Вживання магії Вашому шкодить здоров\'ю' })
+        .setFooter({ text: 'Вживання магії шкодить Вашому здоров\'ю' })
 
         await interaction.editReply({ embeds: [embed] })
     }
