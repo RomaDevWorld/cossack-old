@@ -23,7 +23,7 @@ module.exports = async function (type, client, options) {
         .setColor('Red')
         .setTimestamp()
         if(options.message.attachments.first()){
-            embed.addFields({ name: 'Вкладені файли', value: `${options.message.attachments.map(a => a.url).join(`\n`)}` })
+            embed.addFields({ name: 'Вкладені файли', value: `${options.message.attachments.map(a => a.url).slice(0, 1024).join(`\n`)}` })
         }
         await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creates an embed and send's it to the log channel
     }
@@ -46,7 +46,8 @@ module.exports = async function (type, client, options) {
         .setColor('Blue')
         .setTimestamp()
         if(options.newMessage.attachments.first() || options.oldMessage.attachments.first()){
-            embed.addFields({ name: 'Вкладені файли', value: `**Раніше:**\n${options.oldMessage.attachments.map(i => i.url).join(`\n`)}\n\n**Зараз:**\n${options.newMessage.attachments.map(i => i.url).join(`\n`)}`})
+            //I'll try to short url with some shorting service if it's too large, but for now i'll just cut it.
+            embed.addFields({ name: 'Вкладені файли', value: `**Раніше:**\n${options.oldMessage.attachments.map(i => i.url).slice(0, 1024).join(`\n`)}\n\n**Зараз:**\n${options.newMessage.attachments.map(i => i.url).slice(0, 1024).join(`\n`)}`})
         }
         
         await channel.send({ embeds: [embed] }).catch(err => console.error(err))
