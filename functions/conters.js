@@ -4,14 +4,23 @@ const db = new QuickDB()
 module.exports = async function (client) {
     const database = await db.table(`counters`).all() //Requires a table from db called 'counters'
     for (let i in database){ //Loops throught every value at db
+
         let guild = await client.guilds.cache.get(database[i].id) //Gets a guild from value
         if(!guild){
             console.error(`Remove ${database[i].id} from DB, because I cant see it.`)
             const raw = await db.table(`counters`)
-            await raw.delete(database[i].id) //If guild or channel wasn't found - delete value from db
+            await raw.delete(database[i].id) //If guild wasn't found - delete value from db
             return;
         }
+
         let channel = await guild.channels.cache.get(database[i].value.id) //Gets a channel from value
+        if(!channel){
+            console.error(`Remove ${database[i].id} from DB, because I cant see it's channel`)
+            const raw = await db.table(`counters`)
+            await raw.delete(database[i].id) //If channel wasn't found - delete value from db
+            return;
+        }
+        
         try{
             const online = await getOnline(guild)
             const members = await getMembers(guild)
