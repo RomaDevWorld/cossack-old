@@ -25,7 +25,7 @@ module.exports = {
         var members = {}
         var description = ''
         const filter = i => i.customId === random.toString()
-        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 5000 });
+        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000 });
 
         collector.on('collect', m => {     
             if(!members[m.user.id]){
@@ -59,6 +59,7 @@ module.exports = {
             let newEmbed = collected.first().message.embeds[0]
             newEmbed.data.description = `**Переможець ${interaction.guild.members.cache.get(greatest.id).user.username} з результатом ${greatest.num}**\n\n` + newEmbed.data.description
             newEmbed.data.footer = null
+            newEmbed.data.color = 0x32a852
             interaction.editReply({ embeds: [newEmbed], components: [] })
         });  
     }
