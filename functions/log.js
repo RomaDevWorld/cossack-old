@@ -25,7 +25,7 @@ module.exports = async function (type, client, options) {
         if(options.message.attachments.first()){
             embed.addFields({ name: 'Вкладені файли', value: `${options.message.attachments.map(a => a.url).slice(0, 1024).join(`\n`)}` })
         }
-        await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creates an embed and send's it to the log channel
+        await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`)) //Creates an embed and send's it to the log channel
     }
     //messageUpdate
     else if(type === 'msgUpdate'){
@@ -50,7 +50,7 @@ module.exports = async function (type, client, options) {
             embed.addFields({ name: 'Вкладені файли', value: `**Раніше:**\n${options.oldMessage.attachments.map(i => i.url).slice(0, 1024).join(`\n`)}\n\n**Зараз:**\n${options.newMessage.attachments.map(i => i.url).slice(0, 1024).join(`\n`)}`})
         }
         
-        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
+        await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
     }
     //guildMemberUpdate
     else if(type === 'memUpdate'){
@@ -68,7 +68,7 @@ module.exports = async function (type, client, options) {
             .setFooter({ text: `USID: ${options.newMember.id}` })
             .setColor('Blue')
             .setTimestamp()
-            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creare an embed then send it to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`)) //Creare an embed then send it to the log
 
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
@@ -97,12 +97,12 @@ module.exports = async function (type, client, options) {
             embed.addFields({ name: `Додані ролі:`, value: adRole.join(`\n`) }) //Add a field with the new roles
         }
         if(embed.data.fields){
-            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //If at least one of the fields was added - send embed to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`)) //If at least one of the fields was added - send embed to the log
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
 
             embed.addFields({ name: 'Модератор', value: `${audit.executor}` })
-            log.edit({ embeds: [embed] }).catch(err => console.error(err))
+            log.edit({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
         } 
 
         if(options.oldMember.communicationDisabledUntil && !options.newMember.communicationDisabledUntil){
@@ -114,7 +114,7 @@ module.exports = async function (type, client, options) {
             .addFields({
                 name: 'Участник', value: `${options.newMember}`
             })
-            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creare an embed then send it to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`)) //Creare an embed then send it to the log
 
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
@@ -133,7 +133,7 @@ module.exports = async function (type, client, options) {
                 name: 'Участник', value: `${options.newMember}`,
                 name: "Час блокування", value: `${moment(time).fromNow()} (${moment(time).format('L')})`
             })
-            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err)) //Creare an embed then send it to the log
+            let log = await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`)) //Creare an embed then send it to the log
 
             const audit = await fetchLog(channel.guild, AuditLogEvent.MemberUpdate)
             if(!audit || audit.target.id !== options.newMember.id) return;
@@ -152,7 +152,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Orange')
         .setTimestamp()
-        let log = await channel.send({ embeds: [embed] }).catch(err => console.error(err))
+        let log = await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
 
         const audit = await fetchLog(channel.guild, AuditLogEvent.MemberKick)
         if(!audit || audit.target.id !== options.member.id) return;
@@ -177,7 +177,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Green')
         .setTimestamp()
-        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
+        await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
     }
     //guildBanAdd
     else if(type === 'banAdd'){
@@ -192,7 +192,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.user.id}` })
         .setColor('Red')
         .setTimestamp()
-        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
+        await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
     }
     //guildBanRemove
     else if(type === 'banRemove'){
@@ -207,7 +207,7 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.user.id}` })
         .setColor('Yellow')
         .setTimestamp()
-        await channel.send({ embeds: [embed] }).catch(err => console.error(err))
+        await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
     }
     else if(type === 'voiceJ'){
         channel = await getlog(options.newVoiceState.guild, true)
@@ -215,9 +215,9 @@ module.exports = async function (type, client, options) {
 
         let embed = new EmbedBuilder()
         .setAuthor({ name: `${options.newVoiceState.member.user.tag}`, iconURL: options.newVoiceState.member.user.displayAvatarURL({ dynamic: true }) })
-        .setDescription(`**Приєднався до ${options.newVoiceState.channel}**`)
+        .setDescription(`**Приєднався до #${options.newVoiceState.channel.name}**`)
         .setFooter({ text: `USID: ${options.newVoiceState.id}` })
-        let msg = await channel.send({ embeds: [embed] }).catch(err => console.error(err))
+        let msg = await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
         require(`./voiceSession.js`)(options.newVoiceState.id, channel, 0, msg)
     }
     else if(type === 'voiceL'){
@@ -235,7 +235,7 @@ module.exports = async function (type, client, options) {
 
         let msg = await require(`./voiceSession.js`)(options.newVoiceState.id, channel, 1)
         if(!msg) return;
-        msg.embeds[0].data.description = (msg.embeds[0].data.description + `\n=> ${options.newVoiceState.channel}`).slice(0, 4000)
+        msg.embeds[0].data.description = (msg.embeds[0].data.description + `\n=> #${options.newVoiceState.channel.name}`).slice(0, 4000)
         msg.edit({ embeds: [msg.embeds[0]] })
     }
 };
