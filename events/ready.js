@@ -1,6 +1,7 @@
 const { Rest, REST } = require('@discordjs/rest')
 const { Routes } = require('discord-api-types/v9')
 const { ActivityType } = require('discord.js')
+const { cache } = require('../functions/trackInvites.js')
 require('dotenv').config()
 
 module.exports = {
@@ -10,6 +11,8 @@ module.exports = {
         console.log(`${client.user.tag} is online.`)
 
         client.user.setActivity('tinyurl.com/cossac-invite', { type: ActivityType.Playing }); //Client's activity
+
+        cache(client)
 
         const CLIENT_ID = client.user.id 
         const rest = new REST({

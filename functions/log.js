@@ -2,6 +2,7 @@ const { EmbedBuilder, AuditLogEvent } = require('discord.js');
 const { QuickDB } = require('quick.db')
 const db = new QuickDB().table('logs')
 const moment = require('moment')
+const { track } = require('./trackInvites')
 moment.locale('uk')
 
 module.exports = async function (type, client, options) {
@@ -177,7 +178,15 @@ module.exports = async function (type, client, options) {
         .setFooter({ text: `ID: ${options.member.id}` })
         .setColor('Green')
         .setTimestamp()
-        await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
+        const msg = await channel.send({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
+
+        const invite = await track(options.member)
+        if(!invite) return console.log('No invites')
+        const inviter = options.member.guild.members.cache.get(invite.inviterId)
+        embed.addFields({ name: 'Запрошення', value: `**Код:** ${invite.code}\n**Запросив:** ${inviter || `<@${invite.inviterId}>`}\n**Використано: ${invite.uses ?? '/' + invite.maxUses}**` })
+
+        await msg.edit({ embeds: [embed] }).catch(err => console.error(`An error occured while trying to send a message: ${err.name}: ${err.message}`))
+
     }
     //guildBanAdd
     else if(type === 'banAdd'){

@@ -8,7 +8,8 @@ const client = new Client({ intents: [
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildVoiceStates,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildInvites
 ] }); 
 
 //Creates a json for private channels
