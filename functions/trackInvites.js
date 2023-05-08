@@ -38,8 +38,22 @@ const update = async(invite) => {
     allInvites.set(invite.guild.id, codeUses);
 }
 
+const cacheone = (guild) => {
+    guild.invites.fetch()
+    .then(invites => {
+        const codeUses = new Map();
+        invites.each(inv => codeUses.set(inv.code, inv.uses));
+
+        allInvites.set(guild.id, codeUses);
+    })
+    .catch(err => {
+        console.error("Error caching invites: ", err.message)
+    })
+}
+
 module.exports = {
     cache: cache,
     track: track,
     update: update,
+    cacheone: cacheone
 };
