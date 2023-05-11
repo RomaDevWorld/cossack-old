@@ -1,6 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, Embed, ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType } = require('discord.js')
-const { QuickDB } = require('quick.db')
-const db = new QuickDB().table('misc')
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,7 +7,6 @@ module.exports = {
         .addChannelOption(option => 
             option.setName('category')
             .setDescription('Категорія, в якій будуть створюватись канали для запитів.')
-            .setRequired(true)
             .addChannelTypes(ChannelType.GuildCategory)
         )
         .addRoleOption(option => option.setName('role').setDescription('Роль, власники якої зможуть бачити сворені канали'))
@@ -21,6 +18,7 @@ module.exports = {
         .setAuthor({ name: 'Створення тікетів!' })
         .setColor('Green')
         .setDescription(interaction.options.getString('text') || 'Натисніть на кнопку внизу щоб створити тікет')
+        .setFooter({ text: `${interaction.options.getChannel('category')?.id || "0"}/${interaction.options.getRole('role')?.id || "0"}` })
 
         const row = new ActionRowBuilder()
         .addComponents(
@@ -31,9 +29,7 @@ module.exports = {
             .setStyle(ButtonStyle.Primary)
         )
 
-        const msg = await interaction.channel.send({ embeds: [embed], components: [row] })
-
-        await db.set(`${interaction.guild.id}.ticket`, { category: interaction.options.getChannel('category').id, role: interaction.options.getRole('role')?.id || null })
+        await interaction.channel.send({ embeds: [embed], components: [row] })
 
         await interaction.reply({ content: 'Повідомленя створено!', ephemeral: true })
     }

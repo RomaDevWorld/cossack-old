@@ -1,6 +1,4 @@
 const { PermissionsBitField, EmbedBuilder, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
-const { QuickDB } = require('quick.db')
-const db = new QuickDB().table('misc')
 const moment = require('moment')
 const { createWriteStream, unlink, existsSync, mkdirSync } = require('fs')
 
@@ -23,11 +21,9 @@ module.exports = { //BUTTON'S INFORMATION
                         })
                 })
 
-                if(await db.get(`${interaction.guild.id}.ticket`)){
-                    channel.permissionOverwrites.set(permissionArray);
-                }else{
-                    channel.permissionOverwrites.set([{ id: interaction.guild.id, deny: [PermissionsBitField.Flags.ViewChannel] }]);
-                }
+                channel.permissionOverwrites.set(permissionArray)
+
+                channel.setName(`archi${channel.name.slice(6)}`)
 
                 interaction.message.edit({ components: [] })
 
@@ -56,7 +52,6 @@ module.exports = { //BUTTON'S INFORMATION
                 .addFields(
                     { name: 'Обговорення закрито', value: `**${interaction.member.nickname || interaction.user.username}** закрив обговорення` }
                 )
-                .setFooter({ text: 'Цей канал буде видалено через 5 хвилин' })
 
                 const row = new ActionRowBuilder()
                 .addComponents(
@@ -73,10 +68,6 @@ module.exports = { //BUTTON'S INFORMATION
                 unlink(`${stream.path}`, (err) => {
                     if(err) console.error(err)
                 })
-
-                setTimeout(() => {
-                    channel.delete().catch(err => console.error(err))
-                }, 5 * 60000)
 
             }
         }catch(err){

@@ -1,5 +1,3 @@
-const { QuickDB } = require('quick.db')
-const db = new QuickDB().table('misc')
 const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 
 const cd = new Set()
@@ -7,18 +5,26 @@ const cd = new Set()
 module.exports = { //BUTTON'S INFORMATION
     id: "ticket",
     async execute(interaction){
-        if(!await db.get(`${interaction.guild.id}.ticket`)){
-            interaction.message.delete()
-            await interaction.reply({ content: 'На цьому сервері більше не можна створювати тікети', ephemeral: true })
-        }
         if(cd.has(interaction.user.id)) return await interaction.reply({ content: 'Тікети можна створювати раз в 10 хвилин', ephemeral: true })
 
-        let chName = interaction.guild.channels.cache.filter(channel => channel.name.startsWith('ticket_')).size || 0
+        let chName = interaction.guild.channels.cache.filter(channel => channel.name.startsWith('ticket_') || channel.name.startsWith('archi_')).size || 0
+
+        if(!interaction.message.embeds[0].data.footer){
+            await interaction.message.delete()
+            return interaction.reply({ content: 'Це стара версія тікетів. Створіть це повідомлення знову командою /ticket', ephemeral: true })
+        }
+        const ids = interaction.message.embeds[0].data.footer.text.split('/');
+        for (i in ids) {
+          if (ids[i] === '0') {
+            ids[i] = undefined;
+          }
+        }
 
         try{
             let channel = await interaction.guild.channels.create({ //Creates a new channel
                 name: `ticket_${chName+1}`,
-                parent: interaction.guild.channels.cache.get(await db.get(`${interaction.guild.id}.ticket.category`)) || undefined, //If has perent set perent
+                parent: ids[0] || undefined,
+                position: 0,
                 permissionOverwrites: [
                     {
                         id: interaction.guild.id,
@@ -29,11 +35,11 @@ module.exports = { //BUTTON'S INFORMATION
                         allow: [PermissionsBitField.Flags.ViewChannel], //Allow ticket creator
                     },
                     {
-                        id: await db.get(`${interaction.guild.id}.ticket.role`) || interaction.member.id,
+                        id: ids[1] || interaction.member.id,
                         allow: [PermissionsBitField.Flags.ViewChannel], //Allow mod role
                     },
                 ],
-              })
+            })
 
             const embed = new EmbedBuilder()
             .setAuthor({ name: 'Тікет створено!' })
