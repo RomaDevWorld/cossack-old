@@ -17,7 +17,13 @@ module.exports = { //BUTTON'S INFORMATION
                         { 
                             id: i.id, 
                             allow: [PermissionsBitField.Flags.ViewChannel], 
-                            deny: [PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.AddReactions, PermissionsBitField.Flags.UseApplicationCommands] 
+                            deny: [
+                                PermissionsBitField.Flags.SendMessages, 
+                                PermissionsBitField.Flags.AddReactions, 
+                                PermissionsBitField.Flags.UseApplicationCommands, 
+                                PermissionsBitField.Flags.CreatePublicThreads, 
+                                PermissionsBitField.Flags.CreatePrivateThreads
+                            ] 
                         })
                 })
 
