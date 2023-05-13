@@ -21,22 +21,18 @@ module.exports = {
 
         if(voteCd.has(interaction.user.id)) await wait(1500)
 
-        var allVotes = 0
         for (let i in vote.options){
             if(vote.options[i].value.includes(interaction.user.id)){
                 vote.options[i].value = vote.options[i].value.filter(value => value !== interaction.user.id)
-            }else{
-                allVotes = allVotes + vote.options[i].value.length
             }
         }
-
+        
         let selected = (interaction.customId.split('_')[1] - 1)
         vote.options[selected].value.push(interaction.user.id)
         await db.set(embed.footer.text, vote)
 
-        allVotes++
+        const allVotes = vote.options.reduce((acc, curr) => acc + curr.value.length, 0)
 
-        var num = 1
         embed.description = vote.options.map((o, index) => `**${index+1}.** ${o.name} (${o.value.length} | ${(o.value.length / allVotes * 100).toFixed(0)}%)`).join(`\n`)  + `\n\nУсього голосів: ${allVotes}`
 
         interaction.message.edit({ embeds: interaction.message.embeds })
