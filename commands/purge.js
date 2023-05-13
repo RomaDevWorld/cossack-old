@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -11,7 +11,8 @@ module.exports = {
             .setName('amount')
             .setRequired(true)
             .setDescription('Максимальна кількість повідомлень'))
-        .addUserOption(option => option.setName('user').setDescription('Користувач, повідомлення якого потрібно очистити')),
+        .addUserOption(option => option.setName('user').setDescription('Користувач, повідомлення якого потрібно очистити'))
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     async execute(interaction) {
         const amount = interaction.options.getInteger('amount')
         const user = interaction.options.getUser('user')
