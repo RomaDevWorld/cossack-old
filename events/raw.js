@@ -7,7 +7,7 @@ module.exports = {
       MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
     }
 
-    if (Object.prototype.hasOwnProperty.call(event.t)) return
+    if (!events.hasOwnProperty(event.t)) return
 
     const { d: data } = event
     const user = client.users.cache.get(data.user_id)

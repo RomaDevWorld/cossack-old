@@ -9,7 +9,7 @@ module.exports = {
     if (member) {
       try {
         //Trying to mute a member
-        member.timeout(60 * 1000 * 5, `${interaction.user.tag}: Заблокувати чат на 5 хвилин`)
+        member.timeout(60 * 1000 * 5, `${interaction.user.author.discriminator == '0' ? interaction.user.username : interaction.user.tag}: Заблокувати чат на 5 хвилин`)
         await interaction.reply({
           embeds: [
             {

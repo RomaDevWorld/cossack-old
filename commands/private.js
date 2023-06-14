@@ -56,6 +56,7 @@ module.exports = {
       if (channels[`${interaction.guild.id}_${interaction.member.id}`] && channel) {
         //If private was found (Recreate the channel)
         await require(`../functions/vc_create.js`)(interaction.member, interaction.guild, interaction.client).then(async (cha) => {
+          if (!cha) return
           //Requires a function, that creates a new channel
           let embed = new EmbedBuilder()
             .setAuthor({ name: `Канал пере-створений` }) //Embed says 'Channel was re-created'
@@ -70,6 +71,7 @@ module.exports = {
       } else {
         //Private doesn't exist / Wasn't found
         require(`../functions/vc_create.js`)(interaction.member, interaction.guild, interaction.client).then(async (cha) => {
+          if (!cha) return
           //Requires a function, that creates a new channel
           let embed = new EmbedBuilder()
             .setAuthor({ name: `Канал створений` }) //Embed says 'Channel was created'

@@ -9,7 +9,7 @@ module.exports = {
     if (member) {
       try {
         //Trying to kick a member
-        member.kick(`${interaction.user.tag}: Вигнати учасника з серверу`)
+        member.kick(`${interaction.user.author.discriminator == '0' ? interaction.user.username : interaction.user.tag}: Вигнати учасника з серверу`)
         await interaction.reply({
           embeds: [
             {

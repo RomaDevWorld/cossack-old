@@ -24,7 +24,7 @@ module.exports = async function (type, client, options) {
       .addFields(
         {
           name: 'Автор',
-          value: `${options.message.author} (${options.message.author.tag})`,
+          value: `${options.message.author} (${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag})`,
           inline: true,
         },
         {
@@ -64,7 +64,7 @@ module.exports = async function (type, client, options) {
       .addFields(
         {
           name: 'Автор',
-          value: `${options.newMessage.author} (${options.newMessage.author.tag})`,
+          value: `${options.newMessage.author} (${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag})`,
           inline: true,
         },
         {
@@ -109,7 +109,7 @@ module.exports = async function (type, client, options) {
       //If old nickname and new nickname's are not the same
       let embed = new EmbedBuilder()
         .setAuthor({
-          name: `Нікнейм змінено | ${options.newMember.user.tag}`,
+          name: `Нікнейм змінено | ${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag}`,
           iconURL: options.newMember.displayAvatarURL({
             dynamic: true,
           }),
@@ -237,7 +237,7 @@ module.exports = async function (type, client, options) {
         name: `Учасник вийшов | ${options.member.nickname}`,
         iconURL: options.member.displayAvatarURL({ dynamic: true }),
       })
-      .setDescription(`${options.member} (${options.member.user.tag})`)
+      .setDescription(`${options.member} (${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag})`)
       .setFooter({ text: `ID: ${options.member.id}` })
       .setColor('Orange')
       .setTimestamp()
@@ -251,7 +251,7 @@ module.exports = async function (type, client, options) {
         name: `Учасник вигнаний | ${options.member.user.username}`,
         iconURL: options.member.displayAvatarURL({ dynamic: true }),
       })
-      .setDescription(`${options.member} (${options.member.user.tag})`)
+      .setDescription(`${options.member} (${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag})`)
       .addFields({ name: 'Модератор', value: `${audit.executor}` })
       .setFooter({ text: `ID: ${options.member.id}` })
       .setColor('Red')
@@ -268,7 +268,7 @@ module.exports = async function (type, client, options) {
         name: `Учасник приєднався`,
         iconURL: options.member.displayAvatarURL({ dynamic: true }),
       })
-      .setDescription(`${options.member} (${options.member.user.tag})\nАкаунт створений: ${moment(options.member.user.createdAt).format('YYYY.DD.MM HH:mm')}`)
+      .setDescription(`${options.member} (${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag})\nАкаунт створений: ${moment(options.member.user.createdAt).format('YYYY.DD.MM HH:mm')}`)
       .setFooter({ text: `ID: ${options.member.id}` })
       .setColor('Green')
       .setTimestamp()
@@ -296,7 +296,7 @@ module.exports = async function (type, client, options) {
         name: `Учасник заблокований | ${options.user.username}`,
         iconURL: options.user.displayAvatarURL({ dynamic: true }),
       })
-      .setDescription(`${options.user} (${options.member.user.tag})`)
+      .setDescription(`${options.user} (${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag})`)
       .setFooter({ text: `ID: ${options.user.id}` })
       .setColor('Red')
       .setTimestamp()
@@ -312,7 +312,7 @@ module.exports = async function (type, client, options) {
         name: `Учасник розблокований | ${options.user.username}`,
         iconURL: options.user.displayAvatarURL({ dynamic: true }),
       })
-      .setDescription(`${options.user} (${options.member.user.tag})`)
+      .setDescription(`${options.user} (${options.message.author.discriminator == '0' ? options.message.author.username : options.message.author.tag})`)
       .setFooter({ text: `ID: ${options.user.id}` })
       .setColor('Yellow')
       .setTimestamp()
@@ -323,7 +323,7 @@ module.exports = async function (type, client, options) {
 
     let embed = new EmbedBuilder()
       .setAuthor({
-        name: `${options.newVoiceState.member.user.tag}`,
+        name: `${options.newVoiceState.member.user.discriminator ? options.newVoiceState.member.user.username : options.newVoiceState.member.user.tag}`,
         iconURL: options.newVoiceState.member.user.displayAvatarURL({
           dynamic: true,
         }),

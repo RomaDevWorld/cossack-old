@@ -11,7 +11,7 @@ module.exports = {
         //Trying to ban a member
         member.ban({
           deleteMessageSeconds: 60 * 60,
-          reason: `${interaction.user.tag}: Заблокувати учасника та очистити повідомлення за 1 год.`,
+          reason: `${interaction.user.discriminator === '0' ? interaction.user.username : interaction.usee.tag}: Заблокувати учасника та очистити повідомлення за 1 год.`,
         })
         await interaction.reply({
           embeds: [

@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('disc
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('purge')
-    .setDescription('Очищення декілька повідомлень за секунду')
+    .setDescription('Очищення великої кількості повідомлень')
     .addIntegerOption((option) => option.setMinValue(0).setMaxValue(100).setName('amount').setRequired(true).setDescription('Максимальна кількість повідомлень'))
     .addUserOption((option) => option.setName('user').setDescription('Користувач, повідомлення якого потрібно очистити'))
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),

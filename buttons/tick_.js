@@ -39,7 +39,7 @@ module.exports = {
           .map((m) => `${m.author.tag}: ${m.content || `Системне повідомлення`}`)
           .join('\n')
 
-        const dir = './cache'
+        const dir = './.cache'
         if (!existsSync(dir)) {
           mkdirSync(dir)
         }
@@ -47,7 +47,7 @@ module.exports = {
         if (script.length > 0) {
           stream.write(`[Обговорення розпочато ${moment(createdAt).format(`DD.MM.YYYY HH:mm`)}]\n`)
           stream.write(script)
-          stream.write(`\n[Обговорення закрито ${moment(Date.now()).format(`DD.MM.YYYY HH:mm`)} користувачем ${interaction.user.tag}]`)
+          stream.write(`\n[Обговорення закрито ${moment(Date.now()).format(`DD.MM.YYYY HH:mm`)} користувачем ${interaction.user.author.discriminator == '0' ? interaction.user.username : interaction.user.tag}]`)
           stream.end()
         } else {
           stream.end()

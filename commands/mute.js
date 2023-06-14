@@ -22,6 +22,17 @@ module.exports = {
         ephemeral: true,
       })
 
+    if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.MuteMembers)) {
+      return await interaction.reply({
+        embeds: [
+          {
+            author: { name: 'У мене недостатньо прав для виконання цієї дії!' },
+            color: 0xcc2929,
+          },
+        ],
+        ephemeral: true,
+      })
+    }
     if (member.permissions.has(PermissionFlagsBits.Administrator) || (member.roles.highest.position >= interaction.member.roles.highest.position && !interaction.member.permissions.has(PermissionFlagsBits.Administrator)))
       return await interaction.reply({
         embeds: [
@@ -87,13 +98,13 @@ module.exports = {
       })
 
     try {
-      member.timeout(time * 1000, `${interaction.user.tag}: ${interaction.options.getString('reason') || 'Не вказано'}`)
+      member.timeout(time * 1000, `${interaction.user.author.discriminator == '0' ? interaction.user.username : interaction.user.tag}: ${interaction.options.getString('reason') || 'Не вказано'}`)
 
       return await interaction.reply({
         embeds: [
           {
             author: {
-              name: `${member.user.tag} обмежений до ${moment(Date.now() + time * 1000).format('HH:mm:ss DD.MM.YYYY')}`,
+              name: `${member.user.author.discriminator == '0' ? member.user.username : member.user.tag} обмежений до ${moment(Date.now() + time * 1000).format('HH:mm:ss DD.MM.YYYY')}`,
             },
             color: 0xcc2929,
           },

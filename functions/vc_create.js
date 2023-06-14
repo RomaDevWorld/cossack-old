@@ -3,23 +3,30 @@ const { QuickDB } = require(`quick.db`)
 const db = new QuickDB().table('lobbies')
 
 module.exports = async function (member, guild, client) {
-  let channel = await guild.channels.create({
-    //Creates a new channel
-    name: member.nickname || member.user.username, //Nickname or username
-    bitrate: 96 * 1000, //Max bitrate
-    parent: guild.channels.cache.get(await db.get(guild.id)).parent || undefined, //If has parent set parent
-    type: ChannelType.GuildVoice, //Type: Voice
-    permissionOverwrites: [
-      {
-        id: guild.id,
-        deny: [PermissionsBitField.Flags.ViewChannel], //Deny all the members
-      },
-      {
-        id: member.id,
-        allow: [PermissionsBitField.Flags.ViewChannel], //Allow channel creator
-      },
-    ],
-  })
+  let channel = await guild.channels
+    .create({
+      //Creates a new channel
+      name: member.nickname || member.user.username, //Nickname or username
+      bitrate: 96 * 1000, //Max bitrate
+      parent: guild.channels.cache.get(await db.get(guild.id)).parent || undefined, //If has parent set parent
+      type: ChannelType.GuildVoice, //Type: Voice
+      permissionOverwrites: [
+        {
+          id: guild.id,
+          deny: [PermissionsBitField.Flags.ViewChannel], //Deny all the members
+        },
+        {
+          id: member.id,
+          allow: [PermissionsBitField.Flags.ViewChannel], //Allow channel creator
+        },
+      ],
+    })
+    .catch((err) => {
+      console.error(err)
+      return
+    })
+
+  if (!channel) return
 
   member.voice.setChannel(channel).catch((error) => {
     console.error(error)

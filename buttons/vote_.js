@@ -41,9 +41,11 @@ module.exports = {
 
     embed.description = vote.options.map((o, index) => `**${index + 1}.** ${o.name} (${o.value.length} | ${((o.value.length / allVotes) * 100).toFixed(0)}%)`).join(`\n`) + `\n\nУсього голосів: ${allVotes}`
 
-    interaction.message.edit({ embeds: interaction.message.embeds })
+    await interaction.message.edit({ embeds: interaction.message.embeds }).catch((err) => {
+      console.error(err)
+    })
 
-    await interaction.reply({
+    interaction.reply({
       content: 'Ваш голос зараховано',
       ephemeral: true,
     })
