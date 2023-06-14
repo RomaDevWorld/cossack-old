@@ -32,6 +32,9 @@
   },
   "homepage": "https://github.com/RomaDevWorld/cossac#readme",
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "eslint": "^8.42.0",
+    "eslint-config-prettier": "^8.8.0",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8"
   }
 }
