@@ -10,6 +10,12 @@ module.exports = {
   async execute(client, commands) {
     console.log(`${client.user.tag} is online.`)
 
+    const info = {}
+    info.Guilds = client.guilds.cache.size
+    info.Users = client.users.cache.size
+    info.Channels = client.channels.cache.size
+    console.table(info)
+
     client.user.setActivity('tinyurl.com/cossac-invite', {
       type: ActivityType.Playing,
     }) //Client's activity
