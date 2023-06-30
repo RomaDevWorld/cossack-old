@@ -98,7 +98,7 @@ module.exports = {
       })
 
     try {
-      member.timeout(time * 1000, `${interaction.user.author.discriminator == '0' ? interaction.user.username : interaction.user.tag}: ${interaction.options.getString('reason') || 'Не вказано'}`)
+      member.timeout(time * 1000, `${interaction.user?.discriminator == '0' ? interaction.user?.username : interaction.user?.tag}: ${interaction.options.getString('reason') || 'Не вказано'}`)
 
       return await interaction.reply({
         embeds: [
